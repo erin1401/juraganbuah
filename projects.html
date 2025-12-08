@@ -194,4 +194,17 @@ function addToCart(id){
   const item = PRODUCTS.find(p=>p.id===id);
   let cart = getCart();
   cart.push({...item, qty:1});
-  localStorage.setItem("CART", JSON.stringify(cart))
+  localStorage.setItem("CART", JSON.stringify(cart));
+  alert(item.name + " ditambahkan ke keranjang!");
+}
+
+/* ===== BELI LANGSUNG ===== */
+function buyNow(id){
+  const item = PRODUCTS.find(p=>p.id===id);
+  localStorage.setItem("CART", JSON.stringify([{...item, qty:1}]));
+  window.location.href = "checkout.html";
+}
+</script>
+
+</body>
+</html>
