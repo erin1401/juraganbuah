@@ -3,45 +3,38 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Preview Gallery — Jual Buah Segar</title>
+  <title>Preview Gallery — Juragan Buah</title>
   <link rel="stylesheet" href="../css/utilities.css" />
   <link rel="stylesheet" href="../css/style.css" />
-  <style>
-    .repo-form{display:flex;gap:.5rem;margin-bottom:1rem}
-    .repo-form input{flex:1}
-  </style>
 </head>
 <body class="bg-glass">
   <div class="container">
-    <h1>Gallery dari GitHub Repo</h1>
-    <p>Masukkan owner/repo dan path (folder gambar)</p>
-    <div class="repo-form">
-      <input id="owner" placeholder="Owner (contoh: youruser)" />
-      <input id="repo" placeholder="Repo (contoh: your-repo)" />
-      <input id="path" placeholder="Path (contoh: images/fruits) — kosong = root" />
+    <h1>Gallery (GitHub)</h1>
+    <p>Masukkan owner / repo / path (path kosong = root)</p>
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem">
+      <input id="owner" placeholder="owner (contoh: erin1401)" />
+      <input id="repo" placeholder="repo (contoh: juraganbuah)" />
+      <input id="path" placeholder="path (contoh: assets/img) — kosong untuk root" />
       <button id="fetchBtn" class="btn primary">Ambil</button>
     </div>
     <div id="repoStatus"></div>
-    <div id="repoGallery" class="gallery-grid"></div>
+    <div id="repoGallery" class="gallery-grid" style="margin-top:12px"></div>
   </div>
 
-  <div id="lightbox" class="lightbox hidden"><img id="lbImg"/><button id="lbClose" class="btn ghost">×</button></div>
+  <div id="lightbox" class="lightbox hidden"><img id="lbImg"><button id="lbClose" class="btn ghost">×</button></div>
 
   <script>
-    // Simple GitHub API listing — unauthenticated (rate-limited)
     async function fetchImages(owner, repo, path){
-      const base = `https://api.github.com/repos/${owner}/${repo}/contents/${path || ''}`;
-      const res = await fetch(base);
-      if(!res.ok) throw new Error(await res.text());
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path || ''}`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error('Status: '+res.status);
       const data = await res.json();
-      // filter files with image extensions
       return data.filter(f => /.(png|jpg|jpeg|gif|webp)$/i.test(f.name)).map(f => ({name:f.name, url:f.download_url}));
     }
 
     const status = document.getElementById('repoStatus');
     const gallery = document.getElementById('repoGallery');
-    const fetchBtn = document.getElementById('fetchBtn');
-    fetchBtn.onclick = async () => {
+    document.getElementById('fetchBtn').onclick = async () => {
       const owner = document.getElementById('owner').value.trim();
       const repo = document.getElementById('repo').value.trim();
       const path = document.getElementById('path').value.trim();
@@ -50,10 +43,10 @@
       gallery.innerHTML = '';
       try {
         const imgs = await fetchImages(owner, repo, path);
-        if(!imgs.length) status.textContent = 'Tidak ditemukan gambar di path ini.';
+        if(!imgs.length) status.textContent = 'Tidak ada gambar di path ini.';
         else {
-          status.textContent = `Ditemukan ${imgs.length} gambar.`;
-          gallery.innerHTML = imgs.map(i=>`<img src="${i.url}" alt="${i.name}" />`).join('');
+          status.textContent = 'Menampilkan ' + imgs.length + ' gambar.';
+          gallery.innerHTML = imgs.map(i => `<img src="${i.url}" alt="${i.name}" />`).join('');
           document.querySelectorAll('.gallery-grid img').forEach(img => img.onclick = ()=> {
             document.getElementById('lbImg').src = img.src;
             document.getElementById('lightbox').classList.remove('hidden');
@@ -64,9 +57,8 @@
         status.textContent = 'Gagal: ' + (err.message || err);
       }
     };
-
-    document.getElementById('lbClose').onclick = () => document.getElementById('lightbox').classList.add('hidden');
-    document.getElementById('lightbox').onclick = (e)=> { if(e.target === document.getElementById('lightbox')) document.getElementById('lightbox').classList.add('hidden'); };
+    document.getElementById('lbClose').onclick = ()=> document.getElementById('lightbox').classList.add('hidden');
+    document.getElementById('lightbox').onclick = e=> { if(e.target === document.getElementById('lightbox')) document.getElementById('lightbox').classList.add('hidden'); };
   </script>
 </body>
 </html>
