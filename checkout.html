@@ -72,3 +72,33 @@
 <script src="assets/js/app.js"></script>
 </body>
 </html>
+
+<h3>Alamat Pengiriman</h3>
+<input id="shipAddress" class="input" placeholder="Alamat lengkap">
+
+<h3>Metode Pengiriman</h3>
+<select id="shipMethod" class="input">
+  <option value="reg">Reguler</option>
+  <option value="same">Same Day</option>
+  <option value="cargo">Cargo</option>
+</select>
+
+<h3>Metode Pembayaran</h3>
+<select id="payMethod" class="input">
+  <option value="transfer">Transfer</option>
+  <option value="qris">QRIS</option>
+  <option value="cod">COD</option>
+</select>
+
+<h3>Upload Bukti Pembayaran (Opsional)</h3>
+<input type="file" accept="image/*" onchange="savePaymentProof(this.files[0])">
+
+const addr = document.getElementById("shipAddress").value;
+const shipCost = calcDistanceCity(addr);
+
+let method = document.getElementById("shipMethod").value;
+if(method=="same") shipCost += 20000;
+if(method=="cargo") shipCost += 5000;
+
+const finalTotal = total + shipCost;
+
