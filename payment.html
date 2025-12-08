@@ -1,71 +1,141 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pembayaran — Juragan Buah</title>
-  <link rel="stylesheet" href="assets/css/utilities.css" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembayaran — Juragan Buah</title>
+
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/utilities.css">
+
+<style>
+body { background: #f6f6f6; }
+
+.pay-container {
+  max-width: 850px;
+  margin: 110px auto;
+}
+
+.box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.qris {
+  width: 230px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.bank-box {
+  background: #f4fff4;
+  padding: 15px;
+  border: 1px solid #8adf8a;
+  border-radius: 12px;
+}
+
+.upload-btn {
+  background: #00a13c;
+  padding: 12px;
+  width: 100%;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  text-align: center;
+}
+</style>
+</head>
+
+<body>
+
 <header class="navbar-green">
   <div class="nav-inner">
-    <a href="index.html" class="brand">Juragan Buah</a>
+    <a class="brand" href="index.html">Juragan Buah</a>
     <nav>
       <a href="index.html">Home</a>
       <a href="projects.html">Produk</a>
-      <a href="pricing.html">Harga</a>
       <a href="checkout.html">Checkout</a>
+      <a class="active" href="payment.html">Payment</a>
       <a href="tracking.html">Tracking</a>
     </nav>
   </div>
 </header>
 
-<main class="container" style="padding-top:20px">
-  <div class="card">
-    <h2>Konfirmasi Pembayaran</h2>
-    <p id="payNotice" class="text-muted">Instruksi pembayaran akan muncul di sini.</p>
+<div class="pay-container">
 
-    <div id="paymentArea" class="mt-2"></div>
+  <div class="box">
+    <h2>💸 Metode Pembayaran</h2>
 
-    <div style="margin-top:14px;display:flex;gap:8px">
-      <a id="goTrack" class="btn ghost" href="tracking.html">Lihat Tracking</a>
-      <button id="waSendProof" class="btn primary">Kirim Bukti via WhatsApp</button>
-    </div>
+    <div id="payInfo"></div>
   </div>
-</main>
+
+  <div class="box">
+    <h3>Upload Bukti Pembayaran</h3>
+    <input type="file" accept="image/*" onchange="saveProof(this.files[0])">
+  </div>
+
+  <button class="upload-btn" onclick="finishOrder()">Kirim Konfirmasi Pembayaran</button>
+
+</div>
 
 <script src="assets/js/app.js"></script>
+
 <script>
-  // read params: method, total, order
-  const qs = new URLSearchParams(location.search);
-  const method = qs.get('method');
-  const total = qs.get('total') || '0';
-  const orderId = qs.get('order');
+const order = JSON.parse(localStorage.getItem("LAST_ORDER"));
+if(!order){
+  document.body.innerHTML = "<p>Order tidak ditemukan.</p>";
+}
 
-  const area = document.getElementById('paymentArea');
-  const notice = document.getElementById('payNotice');
+document.getElementById("payInfo").innerHTML = `
+  <p><strong>ID Pesanan:</strong> ${order.id}</p>
+  <p><strong>Total:</strong> ${currency(order.total)}</p>
+  <hr>
+  ${order.payMethod === 'transfer' ? `
+    <div class="bank-box">
+      <b>Transfer Bank</b><br>
+      BRI — 123 456 789 a.n Juragan Buah
+    </div>
+  `: ""}
 
-  if(method === 'qris'){
-    notice.textContent = 'Scan QRIS berikut untuk membayar:';
-    area.innerHTML = `<div class="qr-card"><img src="assets/img/qris.png" alt="QRIS"><div>Total: <strong>Rp${Number(total).toLocaleString('id-ID')}</strong></div></div>`;
-  } else if(method === 'transfer') {
-    notice.textContent = 'Transfer ke nomor rekening berikut:';
-    area.innerHTML = `<div class="card"><p><strong>Bank BNI</strong></p><p>No.Rek: <strong>123-456-789</strong></p><p>Atas Nama: Juragan Buah</p><p class="mt-1">Total: <strong>Rp${Number(total).toLocaleString('id-ID')}</strong></p></div>`;
-  } else if(method === 'cod'){
-    notice.textContent = 'Pilih COD — pesanan akan dibayar saat pengiriman.';
-    area.innerHTML = `<div class="card"><p>Total: <strong>Rp${Number(total).toLocaleString('id-ID')}</strong></p><p>Pesanan akan diproses & dikirim.</p></div>`;
-  } else {
-    area.innerHTML = '<p>Metode tidak dikenali.</p>';
-  }
+  ${order.payMethod === 'qris' ? `
+    <div>
+      <b>Scan QRIS:</b><br>
+      <img src="assets/img/qris.jpg" class="qris">
+    </div>
+  `: ""}
 
-  // WA send proof: opens WA to seller with order id & info
-  document.getElementById('waSendProof').onclick = () => {
-    const text = `Saya sudah bayar. Order: ${orderId || '(tidak ada)'} Total: Rp${Number(total).toLocaleString('id-ID')}`;
-    const WA_SELLER = '6281234567890'; // replace in app.js too
-    window.open(`https://api.whatsapp.com/send?phone=${WA_SELLER}&text=${encodeURIComponent(text)}`, '_blank');
+  ${order.payMethod === 'cod' ? `
+    <div class="bank-box">
+      <b>COD</b><br>
+      Bayar saat barang diterima.
+    </div>
+  `: ""}
+`;
+
+function saveProof(file){
+  let reader = new FileReader();
+  reader.onload = () => {
+    order.paymentProof = reader.result;
+    localStorage.setItem("LAST_ORDER", JSON.stringify(order));
+    alert("Bukti pembayaran tersimpan!");
   };
+  reader.readAsDataURL(file);
+}
 
-  if(orderId) document.getElementById('goTrack').href = `tracking.html?order=${orderId}`;
+function finishOrder(){
+  localStorage.setItem("TRACKING_ORDER", JSON.stringify(order));
+
+  // kirim ke WA
+  window.open(
+    `https://wa.me/${order.phone}?text=Halo%20Admin,%20saya%20sudah%20upload%20bukti%20pembayaran.%0AID:%20${order.id}`
+  );
+
+  window.location.href = "tracking.html";
+}
 </script>
 </body>
 </html>
-
