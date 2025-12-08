@@ -474,3 +474,53 @@ window.savePaymentProof = function(file){
   reader.readAsDataURL(file);
 }
 
+/* ========== SLIDER ========= */
+let slideIndex = 0;
+const slides = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById("dots");
+
+function setupDots(){
+    slides.forEach((_,i)=>{
+        const dot=document.createElement("div");
+        dot.onclick=()=>goToSlide(i);
+        dotsContainer.appendChild(dot);
+    });
+}
+setupDots();
+
+const dots=document.querySelectorAll(".dots div");
+
+function showSlide(n){
+  slides.forEach(s=>s.classList.remove('active'));
+  dots.forEach(d=>d.classList.remove('active'));
+  slides[n].classList.add('active');
+  dots[n].classList.add('active');
+}
+
+function nextSlide(){
+  slideIndex = (slideIndex + 1) % slides.length;
+  showSlide(slideIndex);
+}
+
+function prevSlide(){
+  slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+  showSlide(slideIndex);
+}
+
+function goToSlide(i){
+  slideIndex = i;
+  showSlide(slideIndex);
+}
+
+setInterval(nextSlide, 4000);
+
+/* QUICK ORDER */
+function quickOrder(){
+  const p = document.getElementById("quickProduct").value;
+  const q = document.getElementById("quickQty").value;
+
+  const wa =
+    `https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20pesan%20${p}%20(${q}kg)`;
+
+  window.open(wa, "_blank");
+}
