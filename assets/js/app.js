@@ -513,14 +513,4 @@ function goToSlide(i){
 }
 
 setInterval(nextSlide, 4000);
-
-/* QUICK ORDER */
-function quickOrder(){
-  const p = document.getElementById("quickProduct").value;
-  const q = document.getElementById("quickQty").value;
-
-  const wa =
-    `https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20pesan%20${p}%20(${q}kg)`;
-
-  window.open(wa, "_blank");
 }
