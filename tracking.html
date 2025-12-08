@@ -1,49 +1,107 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tracking Pesanan — Juragan Buah</title>
-  <link rel="stylesheet" href="assets/css/utilities.css" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracking Pesanan</title>
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+<style>
+.track-container {
+  max-width: 850px;
+  margin: 110px auto;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #ccc;
+  margin-right: 12px;
+  transition: .3s;
+}
+
+.circle.active {
+  background: #00a13c;
+}
+
+.track-info-box {
+  background:#fff;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+}
+</style>
+</head>
+
+<body>
+
 <header class="navbar-green">
   <div class="nav-inner">
-    <a href="index.html" class="brand">Juragan Buah</a>
+    <a class="brand" href="index.html">Juragan Buah</a>
     <nav>
       <a href="index.html">Home</a>
       <a href="projects.html">Produk</a>
-      <a href="pricing.html">Harga</a>
       <a href="checkout.html">Checkout</a>
-      <a href="tracking.html">Tracking</a>
+      <a href="payment.html">Payment</a>
+      <a class="active" href="tracking.html">Tracking</a>
     </nav>
   </div>
 </header>
 
-<main class="container" style="padding-top:20px">
-  <div class="card">
-    <h2>Tracking Pesanan</h2>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <input id="trackId" placeholder="Masukkan Order ID (mis: ORD...)" />
-      <button id="trackBtn" class="btn primary">Cari</button>
-      <button id="listOrders" class="btn ghost">Tampilkan Semua</button>
-    </div>
+<div class="track-container">
 
-    <div id="trackResult" class="card mt-2 hidden">
-      <h3>Detil Order</h3>
-      <div id="trackContent"></div>
-      <div class="mt-2">
-        <button id="waTrack" class="btn">Hubungi via WA</button>
-      </div>
-    </div>
+  <div class="track-info-box">
+    <h2>📦 Status Pengiriman</h2>
+
+    <div class="step"><div class="circle" id="s1"></div>Pesanan Dibuat</div>
+    <div class="step"><div class="circle" id="s2"></div>Dikemas</div>
+    <div class="step"><div class="circle" id="s3"></div>Dikirim</div>
+    <div class="step"><div class="circle" id="s4"></div>Selesai</div>
+
+    <hr>
+
+    <div id="detailOrder"></div>
+
+    <div id="proofSpace"></div>
   </div>
-</main>
 
-<script src="assets/js/app.js"></script>
+</div>
+
+<script>
+const order = JSON.parse(localStorage.getItem("TRACKING_ORDER"));
+
+if(!order){
+  document.body.innerHTML="<p>Tidak ada data tracking.</p>";
+}
+
+document.getElementById("detailOrder").innerHTML = `
+  <p><b>ID:</b> ${order.id}</p>
+  <p><b>Total:</b> ${currency(order.total)}</p>
+  <p><b>Metode:</b> ${order.payMethod.toUpperCase()}</p>
+`;
+
+if(order.paymentProof){
+  document.getElementById("proofSpace").innerHTML=`
+    <hr>
+    <p><b>Bukti Pembayaran:</b></p>
+    <img src="${order.paymentProof}" style="width:200px;border-radius:12px">
+  `;
+}
+
+// animasi tracking progress
+setTimeout(()=>document.getElementById("s1").classList.add("active"),300);
+setTimeout(()=>document.getElementById("s2").classList.add("active"),900);
+setTimeout(()=>document.getElementById("s3").classList.add("active"),1800);
+setTimeout(()=>document.getElementById("s4").classList.add("active"),2600);
+</script>
+
 </body>
 </html>
-
-const img = localStorage.getItem("PAY_PROOF");
-if(img){
-   document.getElementById("proofPreview").src = img;
-}
-<img id="proofPreview" style="width:200px;border-radius:10px;">
