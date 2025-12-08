@@ -86,11 +86,46 @@
 <section class="hero">
 
   <!-- BACKGROUND SLIDER -->
-  <div class="hero-slide">
-    <img src="assets/img/banner1.jpg">
-    <img src="assets/img/banner2.jpg">
-    <img src="assets/img/banner3.jpg">
+ <!-- ================= HERO SLIDER ================= -->
+<section class="hero-slider">
+
+  <div class="slides">
+      <div class="slide active" style="background-image:url('assets/img/banner1.jpg');"></div>
+      <div class="slide" style="background-image:url('assets/img/banner2.jpg');"></div>
+      <div class="slide" style="background-image:url('assets/img/banner3.jpg');"></div>
   </div>
+
+  <!-- TEXT KIRI -->
+  <div class="hero-left">
+      <h1 class="hero-title">Buah Segar<br>Setiap Hari 🍉</h1>
+      <p class="hero-sub">Kualitas premium langsung dari petani terbaik</p>
+  </div>
+
+  <!-- QUICK ORDER KANAN -->
+  <div class="hero-order">
+      <h3>Quick Order</h3>
+      <p>Pilih buah favoritmu & pesan cepat!</p>
+
+      <select id="quickProduct">
+          <option value="Semangka Merah">Semangka Merah</option>
+          <option value="Melon Premium">Melon Premium</option>
+          <option value="Jeruk Baby">Jeruk Baby</option>
+      </select>
+
+      <input id="quickQty" type="number" value="1" min="1">
+
+      <button onclick="quickOrder()">Pesan via WhatsApp</button>
+  </div>
+
+  <!-- NAV BUTTON -->
+  <div class="nav-arrow left" onclick="prevSlide()">❮</div>
+  <div class="nav-arrow right" onclick="nextSlide()">❯</div>
+
+  <!-- DOTS -->
+  <div class="dots" id="dots"></div>
+
+</section>
+
 
   <!-- LEFT TEXT -->
   <div class="hero-left tilt">
