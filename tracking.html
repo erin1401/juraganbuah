@@ -32,3 +32,9 @@
 <script src="assets/js/app.js"></script>
 </body>
 </html>
+
+const img = localStorage.getItem("PAY_PROOF");
+if(img){
+   document.getElementById("proofPreview").src = img;
+}
+<img id="proofPreview" style="width:200px;border-radius:10px;">
