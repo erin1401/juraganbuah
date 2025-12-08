@@ -1,65 +1,266 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Harga — Juragan Buah</title>
-  <link rel="stylesheet" href="assets/css/utilities.css" />
-  <link rel="stylesheet" href="assets/css/style.css" />
-</head>
-<body class="bg-glass">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paket Harga — Juragan Buah</title>
 
-  <header class="navbar-green">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/utilities.css">
+
+  <style>
+    body {
+      background: #f7f7f7;
+      margin: 0;
+      padding-top: 90px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #064d21;
+    }
+
+    .pricing-grid {
+      width: 94%;
+      max-width: 1180px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
+      padding: 20px 0 40px;
+    }
+
+    .price-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.06);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: transform .25s;
+    }
+
+    .price-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .price-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #00a13c;
+    }
+
+    .price-info {
+      color: #555;
+      line-height: 1.4;
+      font-size: .9rem;
+    }
+
+    .ratings {
+      display: flex;
+      gap: 6px;
+      color: #ffb300;
+      font-size: 1.1rem;
+    }
+
+    .sales {
+      font-size: .9rem;
+      opacity: .7;
+    }
+
+    .card-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: #00a13c;
+      color: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: .95rem;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-outline {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      border-radius: 10px;
+      background: #fff;
+      border: 2px solid #00a13c;
+      color: #00a13c;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* BAGIAN BAWAH (CTA) */
+    .bottom-cta {
+      background: #eaffea;
+      padding: 40px 20px;
+      text-align: center;
+      margin-top: 20px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.05);
+    }
+
+    .bottom-cta h2 {
+      font-size: 1.9rem;
+      color: #064d21;
+      margin-bottom: 10px;
+    }
+
+    .bottom-cta p {
+      font-size: 1rem;
+      opacity: .8;
+      margin-bottom: 20px;
+    }
+
+    .cta-btn {
+      background: #00a13c;
+      color: #fff;
+      padding: 14px 26px;
+      border-radius: 12px;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- NAVBAR (green transparent) -->
+<header class="navbar-green">
   <div class="nav-inner">
     <a href="index.html" class="brand">Juragan Buah</a>
     <nav>
       <a href="index.html">Home</a>
       <a href="projects.html">Produk</a>
-      <a href="pricing.html">Harga</a>
+      <a class="active" href="pricing.html">Harga</a>
       <a href="checkout.html">Checkout</a>
       <a href="tracking.html">Tracking</a>
     </nav>
   </div>
 </header>
 
-  <main class="container" style="padding-top:28px">
-    <section class="card glass">
-      <h1>Paket & Harga</h1>
-      <p>Pilih paket sesuai kebutuhan — hemat dan cocok untuk keluarga.</p>
+<h1 class="page-title">Paket Buah Premium</h1>
 
-      <div class="pricing-grid">
-        <div class="pricing-card tilt" data-tilt>
-          <h3>Paket Hemat</h3>
-          <p>2 kg mix buah</p>
-          <div class="price">Rp50.000</div>
-          <button class="btn" data-pkg='{"id":"pkg-hemat","title":"Paket Hemat - 2kg","price":50000,"img":"assets/img/package1.jpg"}'>Tambahkan</button>
-        </div>
+<div class="pricing-grid">
 
-        <div class="pricing-card tilt" data-tilt>
-          <h3>Paket Keluarga</h3>
-          <p>5 kg mix buah</p>
-          <div class="price">Rp110.000</div>
-          <button class="btn primary" data-pkg='{"id":"pkg-keluarga","title":"Paket Keluarga - 5kg","price":110000,"img":"assets/img/package2.jpg"}'>Tambahkan</button>
-        </div>
-
-        <div class="pricing-card tilt" data-tilt>
-          <h3>Paket Premium</h3>
-          <p>10 kg mix buah</p>
-          <div class="price">Rp200.000</div>
-          <button class="btn ghost" data-pkg='{"id":"pkg-premium","title":"Paket Premium - 10kg","price":200000,"img":"assets/img/package3.jpg"}'>Tambahkan</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <p>© <span id="yearPricing"></span> Juragan Buah</p>
+  <!-- CARD 1 -->
+  <div class="price-card">
+    <div class="price-title">Paket Hemat</div>
+    <div class="ratings">⭐⭐⭐⭐ (4.2)</div>
+    <div class="sales">1.2rb terjual</div>
+    <div class="price">Rp 25.000</div>
+    <p class="price-info">
+      • Cocok untuk konsumsi harian <br>
+      • Buah campur segar<br>
+      • Porsi 1–2 orang
+    </p>
+    <div class="card-buttons">
+      <button class="btn-outline" onclick="addPackage('Paket Hemat',25000)">Keranjang</button>
+      <button class="btn-primary" onclick="buyPackage('Paket Hemat',25000)">Beli</button>
     </div>
-  </footer>
+  </div>
 
-  <aside id="cartSidebar" class="cart-sidebar"></aside>
+  <!-- CARD 2 -->
+  <div class="price-card">
+    <div class="price-title">Paket Keluarga</div>
+    <div class="ratings">⭐⭐⭐⭐⭐ (4.8)</div>
+    <div class="sales">3.9rb terjual</div>
+    <div class="price">Rp 55.000</div>
+    <p class="price-info">
+      • Lebih banyak buah premium<br>
+      • Porsi 3–5 orang<br>
+      • Fresh guarantee
+    </p>
+    <div class="card-buttons">
+      <button class="btn-outline" onclick="addPackage('Paket Keluarga',55000)">Keranjang</button>
+      <button class="btn-primary" onclick="buyPackage('Paket Keluarga',55000)">Beli</button>
+    </div>
+  </div>
 
-  <script src="assets/js/app.js"></script>
+  <!-- CARD 3 -->
+  <div class="price-card">
+    <div class="price-title">Paket Special</div>
+    <div class="ratings">⭐⭐⭐⭐ (4.5)</div>
+    <div class="sales">850 terjual</div>
+    <div class="price">Rp 75.000</div>
+    <p class="price-info">
+      • Buah impor premium <br>
+      • Pilihan seasonal <br>
+      • Porsi 4–6 orang
+    </p>
+    <div class="card-buttons">
+      <button class="btn-outline" onclick="addPackage('Paket Special',75000)">Keranjang</button>
+      <button class="btn-primary" onclick="buyPackage('Paket Special',75000)">Beli</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM CTA -->
+<div class="bottom-cta">
+  <h2>Butuh Pesanan Besar?</h2>
+  <p>Kami melayani paket hantaran, kantor, acara, dan lain-lain.</p>
+  <a href="https://wa.me/6281234567890" class="cta-btn">Hubungi Admin</a>
+</div>
+
+<script src="assets/js/app.js"></script>
+
+<script>
+/* Tambahkan paket ke cart */
+function addPackage(name, price){
+  const p = {
+    id: "PKT-" + Date.now(),
+    title: name,
+    price: price,
+    qty: 1,
+    img: "assets/img/banner1.jpg"
+  };
+
+  let cart = getCart();
+  cart.push(p);
+  localStorage.setItem("CART", JSON.stringify(cart));
+
+  alert(name + " berhasil ditambahkan ke keranjang!");
+}
+
+/* Beli langsung */
+function buyPackage(name, price){
+  const order = {
+    id: "ORD-" + Date.now(),
+    items: [{
+      id: "PKT",
+      title: name,
+      price: price,
+      qty: 1,
+      img: "assets/img/banner1.jpg"
+    }],
+    total: price
+  };
+
+  localStorage.setItem("CART", JSON.stringify(order.items));
+  window.location.href = "checkout.html";
+}
+</script>
+
 </body>
 </html>
