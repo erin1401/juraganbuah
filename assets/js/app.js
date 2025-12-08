@@ -1,21 +1,30 @@
-/* app.js — fitur lengkap:
-   - cart (localStorage) add/remove/update
-   - checkout → WhatsApp auto-send + simpan order lokal
-   - invoice premium (html2canvas + jsPDF + QR)
-   - tracking local + WA button
-   - gallery preview via GitHub API + lightbox
-   - slider + 3D tilt handlers
+/* assets/js/app.js
+   Versi lengkap untuk Juragan Buah:
+   - Cart (localStorage): add / remove / update / clear
+   - Checkout: WA auto-send + simpan order lokal
+   - Invoice: html2canvas + jsPDF + QR
+   - Tracking: cari order lokal + WA tombol
+   - Gallery preview: preview.html menggunakan GitHub API (lihat file preview.html)
+   - Slider + 3D tilt handlers
 */
 
 (() => {
-  // Utilities
-  const $ = sel => document.querySelector(sel);
-  const $$ = sel => Array.from(document.querySelectorAll(sel));
-  const currency = (v) => {
-    return 'Rp' + Number(v).toLocaleString('id-ID');
-  };
+  'use strict';
 
-  // Seed products (you can expand or fetch from API)
+  /* -------------------------
+     Helpers & constants
+  -------------------------*/
+  const LS_CART = 'jb_cart_v1';
+  const LS_ORDERS = 'jb_orders_v1';
+  const WA_SELLER = '6281234567890'; // <-- GANTI NOMOR PENJUAL (format internasional, tanpa +). Ubah ini.
+  const currency = v => 'Rp' + Number(v).toLocaleString('id-ID');
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+
+  /* -------------------------
+     Products (seed) — edit sesuai katalog
+  -------------------------*/
   const PRODUCTS = [
     { id: 'p1', title: 'Mangga Harum', price: 25000, img: 'assets/img/mangga.jpg' },
     { id: 'p2', title: 'Apel Merah', price: 30000, img: 'assets/img/apel.jpg' },
@@ -23,225 +32,214 @@
     { id: 'p4', title: 'Pisang Ambon', price: 20000, img: 'assets/img/pisang.jpg' }
   ];
 
-  // LocalStorage helpers
-  const LS_CART = 'jb_cart_v4';
-  const LS_ORDERS = 'jb_orders_v4';
+  /* -------------------------
+     localStorage helpers
+  -------------------------*/
+  function loadCart(){ try{ return JSON.parse(localStorage.getItem(LS_CART)) || []; }catch(e){ return []; } }
+  function saveCart(c){ localStorage.setItem(LS_CART, JSON.stringify(c)); updateCartUI(); }
+  function loadOrders(){ try{ return JSON.parse(localStorage.getItem(LS_ORDERS)) || []; }catch(e){ return []; } }
+  function saveOrders(o){ localStorage.setItem(LS_ORDERS, JSON.stringify(o)); }
 
-  function loadCart() {
-    try { return JSON.parse(localStorage.getItem(LS_CART)) || []; } catch(e){ return []; }
-  }
-  function saveCart(cart) { localStorage.setItem(LS_CART, JSON.stringify(cart)); updateCartUI(); }
-  function loadOrders() { try { return JSON.parse(localStorage.getItem(LS_ORDERS)) || []; } catch(e){ return []; } }
-  function saveOrders(orders){ localStorage.setItem(LS_ORDERS, JSON.stringify(orders)); }
-
-  // Cart operations
+  /* -------------------------
+     Cart operations
+  -------------------------*/
   function addToCart(item){
     const cart = loadCart();
     const found = cart.find(i => i.id === item.id);
-    if(found){ found.qty += item.qty; }
-    else cart.push(item);
+    if(found) found.qty += item.qty || 1;
+    else cart.push({ ...item, qty: item.qty || 1 });
     saveCart(cart);
   }
   function removeFromCart(id){
-    let cart = loadCart().filter(i => i.id !== id);
+    const cart = loadCart().filter(i => i.id !== id);
     saveCart(cart);
   }
-  function updateCartItem(id, qty){
+  function updateCartQty(id, qty){
     const cart = loadCart();
     const it = cart.find(i => i.id === id);
     if(!it) return;
-    it.qty = Math.max(1, qty);
+    it.qty = Math.max(1, Number(qty) || 1);
     saveCart(cart);
   }
   function clearCart(){ localStorage.removeItem(LS_CART); updateCartUI(); }
 
-  // UI: cart
-  const cartBtn = $('#cartBtn');
-  const cartSidebar = $('#cartSidebar');
-  const closeCart = $('#closeCart');
-  const cartItemsEl = $('#cartItems');
-  const cartCountEl = $('#cartCount');
-  const cartTotalEl = $('#cartTotal');
-  const clearCartBtn = $('#clearCart');
+  /* -------------------------
+     DOM: Cart UI (sidebar)
+  -------------------------*/
+  const cartSidebarSelector = '#cartSidebar';
+  function buildCartSidebar(){
+    const el = document.querySelector(cartSidebarSelector);
+    if(!el) return;
+    el.innerHTML = `
+      <div class="cart-header">
+        <h3>Keranjang</h3>
+        <button id="closeCartBtn" class="btn ghost">Tutup</button>
+      </div>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-footer">
+        <div class="cart-summary"><strong>Total:</strong> <span id="cartTotal">Rp0</span></div>
+        <div class="cart-actions">
+          <a href="checkout.html" class="btn primary">Checkout</a>
+          <button id="clearCartBtn" class="btn danger">Kosongkan</button>
+        </div>
+      </div>
+    `;
+    // events
+    $('#closeCartBtn').onclick = ()=> document.querySelector(cartSidebarSelector).classList.remove('open');
+    $('#clearCartBtn').onclick = ()=> { if(confirm('Kosongkan keranjang?')) clearCart(); };
+    updateCartUI();
+  }
 
   function updateCartUI(){
+    const el = document.querySelector(cartSidebarSelector);
+    if(!el) return;
     const cart = loadCart();
-    const count = cart.reduce((s,i)=>s+i.qty,0);
-    const total = cart.reduce((s,i)=>s+i.qty*i.price,0);
-    cartCountEl.textContent = count;
-    $('#cartCount') && $('#cartCount').textContent = count;
-    $('#cartCount2') && $('#cartCount2').textContent = count;
-    cartTotalEl.textContent = currency(total);
+    const total = cart.reduce((s,i)=> s + i.price * i.qty, 0);
+    const count = cart.reduce((s,i)=> s + i.qty, 0);
+    el.querySelector('#cartTotal').textContent = currency(total);
 
-    cartItemsEl.innerHTML = cart.length ? cart.map(i => `
+    const itemsWrap = el.querySelector('#cartItems');
+    if(!itemsWrap) return;
+    itemsWrap.innerHTML = cart.length ? cart.map(i => `
       <div class="cart-item" data-id="${i.id}">
-        <img src="${i.img || 'https://picsum.photos/seed/'+i.id+'/120/80'}" alt="${i.title}">
+        <img src="${i.img}" onerror="this.src='https://picsum.photos/seed/${i.id}/120/80'"/>
         <div style="flex:1">
           <strong>${i.title}</strong>
           <div style="font-size:.9rem;color:#666">${currency(i.price)} x ${i.qty}</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:.4rem">
-          <button class="btn small" data-action="inc">+</button>
-          <button class="btn small" data-action="dec">-</button>
-          <button class="btn small danger" data-action="del">x</button>
+        <div style="display:flex;flex-direction:column;gap:.35rem">
+          <button class="btn small" data-act="inc">+</button>
+          <button class="btn small" data-act="dec">-</button>
+          <button class="btn small danger" data-act="del">x</button>
         </div>
       </div>
-    `).join('') : '<p>Keranjang kosong</p>';
+    `).join('') : '<p style="padding:12px;">Keranjang kosong</p>';
 
-    // attach events
-    $$('.cart-item').forEach(el=>{
-      const id = el.dataset.id;
-      el.querySelector('[data-action="inc"]').onclick = ()=>{ 
-        const cart = loadCart(); const item = cart.find(x=>x.id===id); item.qty++; saveCart(cart); 
+    // cart counts top
+    $$('#cartCountTop, #cartCountPrice, #cartCount, #cartCount2, #cartCountPrice, #cartCountTop, #cartCountPrice').forEach(n => { if(n) n.textContent = count; });
+
+    // attach item buttons
+    $$('.cart-item').forEach(itemEl => {
+      const id = itemEl.dataset.id;
+      itemEl.querySelector('[data-act="inc"]').onclick = () => {
+        const cart = loadCart(); const it = cart.find(x=>x.id===id); if(it){ it.qty++; saveCart(cart); }
       };
-      el.querySelector('[data-action="dec"]').onclick = ()=>{
-        const cart = loadCart(); const item = cart.find(x=>x.id===id); item.qty = Math.max(1, item.qty-1); saveCart(cart);
+      itemEl.querySelector('[data-act="dec"]').onclick = () => {
+        const cart = loadCart(); const it = cart.find(x=>x.id===id); if(it){ it.qty = Math.max(1, it.qty-1); saveCart(cart); }
       };
-      el.querySelector('[data-action="del"]').onclick = ()=> removeFromCart(id);
+      itemEl.querySelector('[data-act="del"]').onclick = () => removeFromCart(id);
     });
   }
 
-  // Cart button open
-  cartBtn && (cartBtn.onclick = ()=> { cartSidebar.classList.add('open'); });
-  closeCart && (closeCart.onclick = ()=> { cartSidebar.classList.remove('open'); });
-  clearCartBtn && (clearCartBtn.onclick = ()=> { if(confirm('Kosongkan keranjang?')) clearCart(); });
-
-  // Load products into pages
-  function renderProductsGrid(containerId, withButtons = true){
-    const el = document.getElementById(containerId);
-    if(!el) return;
-    el.innerHTML = PRODUCTS.map(p => `
+  /* -------------------------
+     Render product grids
+  -------------------------*/
+  function renderProductsGrid(containerId = 'productsGrid', full = false){
+    const wrap = document.getElementById(containerId);
+    if(!wrap) return;
+    const products = PRODUCTS.slice();
+    wrap.innerHTML = products.map(p => `
       <div class="product-card tilt" data-id="${p.id}" data-tilt>
         <img src="${p.img}" onerror="this.src='https://picsum.photos/seed/${p.id}/600/400'">
         <h4>${p.title}</h4>
         <p class="price">${currency(p.price)}</p>
         <div class="product-actions">
-          ${withButtons ? `<button class="btn" data-add="${p.id}">Tambah</button>` : ''}
-          <button class="btn ghost" data-view="${p.id}">Preview</button>
+          <button class="btn" data-add="${p.id}">Tambah</button>
+          <button class="btn ghost" data-preview="${p.id}">Preview</button>
         </div>
       </div>
     `).join('');
-
-    // attach add buttons
-    el.querySelectorAll('[data-add]').forEach(btn=>{
+    // attach events
+    wrap.querySelectorAll('[data-add]').forEach(btn=>{
       btn.onclick = (e) => {
         const id = e.currentTarget.dataset.add;
         const p = PRODUCTS.find(x=>x.id===id);
-        addToCart({ id:p.id, title:p.title, price:p.price, qty:1, img:p.img });
+        addToCart({ id: p.id, title: p.title, price: p.price, qty:1, img: p.img });
         alert(`${p.title} ditambahkan ke keranjang`);
       };
     });
-
-    // attach preview to open lightbox
-    el.querySelectorAll('[data-view]').forEach(btn=>{
-      btn.onclick = (e) => {
-        const id = e.currentTarget.dataset.view;
+    wrap.querySelectorAll('[data-preview]').forEach(btn=>{
+      btn.onclick = e => {
+        const id = e.currentTarget.dataset.preview;
         const p = PRODUCTS.find(x=>x.id===id);
         openLightbox(p.img);
       };
     });
-
     initTilt();
   }
 
-  // quick order form handlers
-  const quickOrder = $('#quickOrder');
-  if(quickOrder){
-    quickOrder.onsubmit = (ev) => {
-      ev.preventDefault();
-      const name = $('#name').value.trim();
-      const phone = $('#phone').value.trim();
-      const product = $('#productSelect').value;
-      const qty = parseInt($('#qty').value || '1', 10);
-      const note = $('#note').value.trim();
-      const p = PRODUCTS.find(x=>x.title.includes(product)) || { id: 'quick', title: product, price: 30000, img: 'assets/img/default-prod.jpg' };
-      addToCart({ id: p.id, title: p.title + ' ('+product+')', price: p.price, qty, img: p.img });
-      // optional: store customer info in session storage for quick checkout
-      sessionStorage.setItem('jb_customer', JSON.stringify({ name, phone }));
-      alert('Item ditambahkan ke keranjang. Lanjut ke checkout ketika siap.');
-    };
-    $('#waQuick').onclick = () => {
-      const name = $('#name').value.trim();
-      const phone = $('#phone').value.trim();
-      const product = $('#productSelect').value;
-      const qty = $('#qty').value;
-      const note = $('#note').value.trim();
-      if(!phone) return alert('Masukkan nomor WA tujuan Anda.');
-      const waNumber = phone.replace(/\D/g,'');
-      const text = encodeURIComponent(`Halo, saya ${name}\nPesanan: ${product}\nQty: ${qty}\nCatatan: ${note}`);
-      const url = `https://api.whatsapp.com/send?phone=${waNumber}&text=${text}`;
-      window.open(url, '_blank');
-    };
-  }
-
-  // Slider
+  /* -------------------------
+     Slider
+  -------------------------*/
   function initSlider(){
     const slides = $$('.slide');
     if(!slides.length) return;
     let idx = 0;
-    slides.forEach((s,i)=> s.classList.toggle('active', i===0));
-    const show = (n)=> {
-      slides.forEach((s,i)=> s.classList.toggle('active', i===n));
-    };
-    $('#nextSlide') && ($('#nextSlide').onclick = ()=> { idx = (idx+1)%slides.length; show(idx); });
-    $('#prevSlide') && ($('#prevSlide').onclick = ()=> { idx = (idx-1+slides.length)%slides.length; show(idx); });
-
-    // auto slide
-    setInterval(()=>{ idx = (idx+1)%slides.length; show(idx); }, 6000);
-    // parallax on mouse
-    const hero = $('.hero');
-    if(hero){
-      hero.onmousemove = (e) => {
-        const w = hero.clientWidth; const h = hero.clientHeight;
-        const x = (e.clientX/w - 0.5) * 20;
-        const y = (e.clientY/h - 0.5) * 10;
-        hero.style.transform = `translate3d(${x}px,${y}px,0)`;
-      };
-    }
+    slides.forEach((s,i) => s.classList.toggle('active', i===0));
+    window.setInterval(()=> {
+      slides[idx].classList.remove('active');
+      idx = (idx + 1) % slides.length;
+      slides[idx].classList.add('active');
+    }, 6000);
   }
 
-  // 3D tilt init
+  /* -------------------------
+     3D tilt
+  -------------------------*/
   function initTilt(){
-    const tiltEls = $$('.tilt');
-    tiltEls.forEach(el=>{
+    $$('.tilt').forEach(el => {
+      el.style.transformStyle = 'preserve-3d';
       el.onmousemove = (ev) => {
-        const rect = el.getBoundingClientRect();
-        const x = (ev.clientX - rect.left) / rect.width;
-        const y = (ev.clientY - rect.top) / rect.height;
-        const rx = (y - 0.5) * 10;
-        const ry = (0.5 - x) * 10;
-        el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
-        el.style.boxShadow = `${-ry*2}px ${rx*2}px 30px rgba(0,0,0,0.12)`;
+        const r = el.getBoundingClientRect();
+        const px = (ev.clientX - r.left) / r.width;
+        const py = (ev.clientY - r.top) / r.height;
+        const rx = (py - 0.5) * 10;
+        const ry = (0.5 - px) * 14;
+        el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.02)`;
+        el.style.transition = 'transform 0.08s';
       };
-      el.onmouseleave = ()=> { el.style.transform=''; el.style.boxShadow=''; };
+      el.onmouseleave = () => { el.style.transform = ''; el.style.transition = 'transform 0.25s ease'; };
     });
   }
 
-  // Lightbox
-  const lightbox = $('#lightbox'), lbImg = $('#lightboxImg'), lbClose = $('#lightboxClose');
-  function openLightbox(src){ lbImg.src = src; lightbox.classList.remove('hidden'); }
-  function closeLightbox(){ lightbox.classList.add('hidden'); lbImg.src=''; }
-  lbClose && (lbClose.onclick = closeLightbox);
-  lightbox && (lightbox.onclick = (e) => { if(e.target === lightbox) closeLightbox(); });
+  /* -------------------------
+     Lightbox
+  -------------------------*/
+  const lightbox = $('#lightbox');
+  const lightboxImg = $('#lightboxImg');
+  function openLightbox(src){
+    if(!lightbox) return;
+    lightboxImg.src = src;
+    lightbox.classList.remove('hidden');
+  }
+  function closeLightbox(){
+    if(!lightbox) return;
+    lightbox.classList.add('hidden');
+    lightboxImg.src = '';
+  }
+  if($('#lightboxClose')) $('#lightboxClose').onclick = closeLightbox;
+  if(lightbox) lightbox.onclick = (e) => { if(e.target === lightbox) closeLightbox(); };
 
-  // mini gallery preview on index: fetch a few random images (simulate GitHub preview)
+  /* -------------------------
+     Mini gallery on index (fallback images)
+  -------------------------*/
   function renderMiniGallery(){
     const el = $('#miniGallery');
     if(!el) return;
-    const imgs = [
-      'assets/img/gallery1.jpg','assets/img/gallery2.jpg','assets/img/gallery3.jpg',
-      'assets/img/gallery4.jpg','assets/img/gallery5.jpg','assets/img/gallery6.jpg'
-    ];
-    el.innerHTML = imgs.map(src => `<img src="${src}" onerror="this.src='https://picsum.photos/seed/${Math.random()}/300/200'" data-src="${src}">`).join('');
-    el.querySelectorAll('img').forEach(img => img.onclick = ()=> openLightbox(img.src));
+    const imgs = ['assets/img/gallery1.jpg','assets/img/gallery2.jpg','assets/img/gallery3.jpg','assets/img/gallery4.jpg','assets/img/gallery5.jpg','assets/img/gallery6.jpg'];
+    el.innerHTML = imgs.map(s => `<img src="${s}" onerror="this.src='https://picsum.photos/seed/${Math.random()}/300/200'">`).join('');
+    el.querySelectorAll('img').forEach(img => img.onclick = () => openLightbox(img.src));
   }
 
-  // Checkout page handlers
-  function initCheckout(){
-    const checkoutItems = $('#checkoutItems');
-    function renderCheckoutItems(){
+  /* -------------------------
+     Checkout page logic: render items, handle form, WA send, save local, invoice
+  -------------------------*/
+  function initCheckoutPage(){
+    const container = $('#checkoutItems');
+    if(!container) return;
+    function render(){
       const cart = loadCart();
-      checkoutItems.innerHTML = cart.length ? cart.map(i=>`
+      container.innerHTML = cart.length ? cart.map(i => `
         <div class="cart-item">
           <img src="${i.img}" onerror="this.src='https://picsum.photos/seed/${i.id}/120/80'"/>
           <div style="flex:1">
@@ -250,113 +248,109 @@
           </div>
         </div>
       `).join('') : '<p>Keranjang kosong — tambahkan produk terlebih dahulu.</p>';
-      $('#invoiceContent') && ($('#invoiceContent').innerHTML = checkoutItems.innerHTML);
+      // invoiceContent mirror
+      const invoiceCont = $('#invoiceContent');
+      if(invoiceCont) invoiceCont.innerHTML = container.innerHTML;
     }
-    renderCheckoutItems();
+    render();
 
-    const checkoutForm = $('#checkoutForm');
-    checkoutForm && (checkoutForm.onsubmit = (ev) => {
-      ev.preventDefault();
+    const form = $('#checkoutForm');
+    if(form){
+      form.onsubmit = (ev) => {
+        ev.preventDefault();
+        const name = $('#c_name').value.trim();
+        const phone = $('#c_phone').value.trim();
+        const address = $('#c_address').value.trim();
+        const note = $('#c_note').value.trim();
+        const cart = loadCart();
+        if(!cart.length) { alert('Keranjang kosong'); return; }
+        const orderId = 'ORD' + Date.now();
+        const total = cart.reduce((s,i)=> s + i.price*i.qty, 0);
+        const order = { id: orderId, name, phone, address, note, items: cart, total, status: 'received', created: new Date().toISOString() };
+        // save local
+        const orders = loadOrders();
+        orders.unshift(order);
+        saveOrders(orders);
+        // prepare WA text
+        const itemsText = cart.map(i => `${i.title} x${i.qty} — ${currency(i.price*i.qty)}`).join('\n');
+        const text = encodeURIComponent(`Order Baru (${orderId})\nNama: ${name}\nNoWA: ${phone}\nAlamat: ${address}\n\nItems:\n${itemsText}\n\nTotal: ${currency(total)}\nCatatan: ${note}`);
+        // open WA to seller
+        // IMPORTANT: change WA_SELLER variable above to your seller number
+        if(confirm('Kirim pesanan via WhatsApp sekarang? (membuka tab baru)')) {
+          window.open(`https://api.whatsapp.com/send?phone=${WA_SELLER}&text=${text}`, '_blank');
+          clearCart();
+          alert('Pesanan tersimpan lokal sebagai ' + orderId);
+          window.location.href = 'tracking.html';
+        } else {
+          alert('Pesanan disimpan lokal sebagai ' + orderId);
+        }
+      };
+    }
+
+    // save local order button
+    if($('#saveLocalOrder')) $('#saveLocalOrder').onclick = () => {
       const name = $('#c_name').value.trim();
       const phone = $('#c_phone').value.trim();
       const address = $('#c_address').value.trim();
       const note = $('#c_note').value.trim();
       const cart = loadCart();
-      if(!cart.length) return alert('Keranjang kosong.');
-      const orderId = 'ORD' + Date.now();
-      const total = cart.reduce((s,i)=> s + i.price*i.qty, 0);
-      const order = { id: orderId, name, phone, address, note, items: cart, total, status: 'received', created: new Date().toISOString() };
-      // save locally
-      const orders = loadOrders();
-      orders.unshift(order);
-      saveOrders(orders);
-      // WA auto-send:
-      const waTo = '6281234567890'; // <-- Ganti nomer penjual tujuan WA di sini (format internasional tanpa +)
-      const text = encodeURIComponent(
-        `Order Baru (${orderId})\nNama: ${name}\nNoWA: ${phone}\nAlamat: ${address}\n\nItems:\n` + cart.map(i=>`${i.title} x${i.qty} - ${currency(i.price*i.qty)}`).join('\n') + `\n\nTotal: ${currency(total)}\nCatatan: ${note}`
-      );
-      const waUrl = `https://api.whatsapp.com/send?phone=${waTo}&text=${text}`;
-      // clear cart after sending
-      if(confirm('Kirim pesanan via WhatsApp sekarang? (Halaman akan membuka WhatsApp)')) {
-        window.open(waUrl, '_blank');
-        clearCart();
-        alert('Pesanan tersimpan secara lokal dengan ID: ' + orderId);
-        // redirect to tracking page
-        window.location.href = 'tracking.html';
-      } else {
-        // still save order
-        alert('Pesanan disimpan secara lokal dengan ID: ' + orderId);
-      }
-    });
-
-    // save local order button
-    $('#saveLocal') && ($('#saveLocal').onclick = ()=>{
-      const name = $('#c_name').value.trim();
-      const phone = $('#c_phone').value.trim();
-      const address = $('#c_address').value.trim();
-      const note = $('#c_note').value.trim();
-      const cart = loadCart(); if(!cart.length) return alert('Keranjang kosong');
+      if(!cart.length) return alert('Keranjang kosong');
       const orderId = 'ORD' + Date.now();
       const total = cart.reduce((s,i)=> s + i.price*i.qty, 0);
       const order = { id: orderId, name, phone, address, note, items: cart, total, status: 'saved', created: new Date().toISOString() };
       const orders = loadOrders(); orders.unshift(order); saveOrders(orders);
-      alert('Order disimpan lokal dengan ID: '+orderId);
-    });
+      alert('Order disimpan lokal dengan ID: ' + orderId);
+    };
 
-    // Invoice generation (html2canvas + jsPDF + QR)
-    $('#generateInvoice') && ($('#generateInvoice').onclick = async ()=>{
+    // generate invoice (html2canvas + jsPDF + QR)
+    if($('#genInvoice')) $('#genInvoice').onclick = async () => {
       const cart = loadCart();
       if(!cart.length) return alert('Keranjang kosong');
-      const invoiceEl = document.createElement('div');
-      invoiceEl.style.padding = '20px';
-      invoiceEl.style.background = '#fff';
-      invoiceEl.style.color = '#111';
-      invoiceEl.innerHTML = `
-        <h2>Invoice — Jual Buah Segar</h2>
+      // build invoice DOM
+      const invoiceDom = document.createElement('div');
+      invoiceDom.style.padding = '20px'; invoiceDom.style.background = '#fff'; invoiceDom.style.color = '#111'; invoiceDom.style.width = '800px';
+      invoiceDom.innerHTML = `
+        <h2>Invoice — Juragan Buah</h2>
         <div><strong>Tanggal:</strong> ${new Date().toLocaleString()}</div>
-        <div style="margin-top:10px">
-          <table style="width:100%;border-collapse:collapse">
-            <thead><tr><th align="left">Item</th><th align="right">Qty</th><th align="right">Total</th></tr></thead>
-            <tbody>
-              ${cart.map(i=>`<tr><td>${i.title}</td><td align="right">${i.qty}</td><td align="right">${currency(i.price*i.qty)}</td></tr>`).join('')}
-            </tbody>
-          </table>
-          <h3 style="text-align:right">Total: ${currency(cart.reduce((s,i)=>s+i.price*i.qty,0))}</h3>
-        </div>
-        <div id="qrInvoice"></div>
+        <table style="width:100%;margin-top:12px;border-collapse:collapse">
+          <thead><tr><th align="left">Item</th><th align="right">Qty</th><th align="right">Subtotal</th></tr></thead>
+          <tbody>
+            ${cart.map(i => `<tr><td>${i.title}</td><td align="right">${i.qty}</td><td align="right">${currency(i.price*i.qty)}</td></tr>`).join('')}
+          </tbody>
+        </table>
+        <h3 style="text-align:right">Total: ${currency(cart.reduce((s,i)=> s + i.price*i.qty,0))}</h3>
+        <div id="qrInv" style="margin-top:8px"></div>
       `;
-      document.body.appendChild(invoiceEl);
-      // generate QR
-      const qrDiv = invoiceEl.querySelector('#qrInvoice');
-      new QRCode(qrDiv, { text: 'Invoice('+Date.now()+')', width:128, height:128 });
+      document.body.appendChild(invoiceDom);
+      // QR
+      new QRCode(invoiceDom.querySelector('#qrInv'), { text: `INV-${Date.now()}`, width:128, height:128 });
       // render canvas
-      const canvas = await html2canvas(invoiceEl, { scale: 2 });
+      const canvas = await html2canvas(invoiceDom, { scale: 2 });
       const imgData = canvas.toDataURL('image/png');
-      // create PDF
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF('p','mm','a4');
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+      const pageW = pdf.internal.pageSize.getWidth();
       const imgProps = pdf.getImageProperties(imgData);
-      const pdfHeight = (imgProps.height * pageWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pdfHeight);
+      const pdfH = (imgProps.height * pageW) / imgProps.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pageW, pdfH);
       pdf.save(`invoice_${Date.now()}.pdf`);
-      document.body.removeChild(invoiceEl);
-    });
+      document.body.removeChild(invoiceDom);
+    };
   }
 
-  // Tracking page
-  function initTracking(){
-    $('#trackBtn') && ($('#trackBtn').onclick = () => {
+  /* -------------------------
+     Tracking page logic
+  -------------------------*/
+  function initTrackingPage(){
+    if(!$('#trackBtn')) return;
+    $('#trackBtn').onclick = () => {
       const id = $('#trackId').value.trim();
-      const result = $('#trackResult');
-      const content = $('#trackContent');
       if(!id) return alert('Masukkan Order ID');
       const orders = loadOrders();
       const found = orders.find(o => o.id === id);
-      if(!found) { alert('Order tidak ditemukan'); return; }
-      result.classList.remove('hidden');
-      content.innerHTML = `
+      if(!found) return alert('Order tidak ditemukan');
+      $('#trackResult').classList.remove('hidden');
+      $('#trackContent').innerHTML = `
         <p><strong>Order ID:</strong> ${found.id}</p>
         <p><strong>Nama:</strong> ${found.name}</p>
         <p><strong>NoWA:</strong> ${found.phone}</p>
@@ -366,64 +360,87 @@
         <ul>${found.items.map(i=>`<li>${i.title} x${i.qty} — ${currency(i.price*i.qty)}</li>`).join('')}</ul>
         <p><strong>Total:</strong> ${currency(found.total)}</p>
       `;
-      $('#waTrack') && ($('#waTrack').onclick = ()=> {
-        const waTo = found.phone.replace(/\D/g,'');
-        const text = encodeURIComponent(`Halo, saya ingin menanyakan status order ${found.id}`);
-        window.open(`https://api.whatsapp.com/send?phone=${waTo}&text=${text}`, '_blank');
-      });
-    });
+      $('#waContact').onclick = () => {
+        const wa = found.phone.replace(/\D/g,'');
+        const txt = encodeURIComponent(`Halo, saya ingin menanyakan status order ${found.id}`);
+        window.open(`https://api.whatsapp.com/send?phone=${wa}&text=${txt}`, '_blank');
+      };
+    };
 
-    $('#listOrders') && ($('#listOrders').onclick = ()=>{
+    $('#listOrders') && ($('#listOrders').onclick = () => {
       const orders = loadOrders();
-      if(!orders.length) return alert('Tidak ada order tersimpan lokal');
-      const s = orders.map(o=>`${o.id} — ${o.name} — ${o.status} — ${new Date(o.created).toLocaleString()}`).join('\n');
+      if(!orders.length) return alert('Tidak ada order lokal');
+      const s = orders.map(o => `${o.id} — ${o.name} — ${o.status} — ${new Date(o.created).toLocaleString()}`).join('\n');
       alert('Orders lokal:\n\n' + s);
     });
   }
 
-  // Gallery via GitHub API (preview.html will handle full)
-  // Here we show a few images if available (from assets or fallback)
-  function initGalleryPreview(){
-    renderMiniGallery();
+  /* -------------------------
+     Projects / Pricing page init (attach package buttons)
+  -------------------------*/
+  function initPricingPage(){
+    $$('.pricing-card [data-pkg]').forEach(btn => {
+      btn.onclick = (e) => {
+        const pkg = JSON.parse(btn.getAttribute('data-pkg'));
+        addToCart({ id: pkg.id, title: pkg.title, price: Number(pkg.price), qty:1, img: pkg.img || 'assets/img/package1.jpg' });
+        alert(pkg.title + ' ditambahkan ke keranjang');
+      };
+    });
   }
 
-  // initialization on DOM ready
+  /* -------------------------
+     GitHub Gallery Preview (preview.html handles direct GitHub API calls)
+     Here we keep a mini preview on index
+  -------------------------*/
+  // renderMiniGallery already defined above
+
+  /* -------------------------
+     Init function on DOM ready
+  -------------------------*/
   document.addEventListener('DOMContentLoaded', () => {
-    // common in many pages
-    document.querySelectorAll('#year,#yearP,#yearPr,#yearCh,#yearTr').forEach(el=>{
+    // render cart sidebar if present
+    buildCartSidebar();
+
+    // render products in multiple places
+    renderProductsGrid('productsGrid');
+    renderProductsGrid('productsFull');
+
+    // product list on projects page:
+    renderProductsGrid('productsFull');
+
+    // pricing page behaviors
+    initPricingPage();
+
+    // slider + gallery + tilt
+    initSlider();
+    initTilt();
+    renderMiniGallery();
+
+    // checkout page
+    initCheckoutPage();
+
+    // tracking page
+    initTrackingPage();
+
+    // attach cart open buttons
+    $$('#cartBtn, #cartBtnTop, #cartBtn2, #cartBtnPrice').forEach(btn => {
+      if(btn) btn.onclick = () => document.querySelector(cartSidebarSelector).classList.add('open');
+    });
+
+    // lightbox close already attached if exists
+    if($('#lightboxClose')) $('#lightboxClose').onclick = closeLightbox;
+
+    // wire year fields
+    $$('#year,#yearP,#yearPr,#yearCh,#yearTr,#yearProjects,#yearPricing,#yearCheckout,#yearTracking').forEach(el => {
       if(el) el.textContent = new Date().getFullYear();
     });
 
-    initSlider();
-    renderProductsGrid('productsGrid', true);
-    renderProductsGrid('productsFull', true);
-    initGalleryPreview();
+    // build product cards on pages if missing
+    if(document.getElementById('productsGrid')) renderProductsGrid('productsGrid');
+    if(document.getElementById('productsFull')) renderProductsGrid('productsFull');
+
+    // ensure cart UI reflects state
     updateCartUI();
-    initCheckout();
-    initTracking();
-
-    // open cart buttons on other pages
-    const cartBtns = document.querySelectorAll('#cartBtn,#cartBtn2');
-    cartBtns.forEach(b => { b.onclick = ()=> { cartSidebar.classList.add('open'); } });
-
-    // attach product add in pricing page
-    document.querySelectorAll('[data-add]').forEach(btn=>{
-      btn.addEventListener('click', (e)=>{
-        const id = btn.dataset.add;
-        const price = btn.dataset.price ? parseInt(btn.dataset.price,10) : 0;
-        const title = btn.dataset.title || id;
-        if(price) addToCart({ id: 'pkg-'+id, title, price, qty:1, img: 'assets/img/package.jpg' });
-        else {
-          // find product id
-          const p = PRODUCTS.find(x=>x.id===id);
-          if(p) addToCart({ id:p.id, title:p.title, price:p.price, qty:1, img:p.img });
-        }
-        updateCartUI();
-      });
-    });
-
-    // basic product preview open: click on product image shows lightbox
-    $$('.product-card img').forEach(img => img.onclick = ()=> openLightbox(img.src));
   });
 
 })();
