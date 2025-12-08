@@ -499,34 +499,93 @@ function renderProductsGrid(containerId = 'productsFull'){
   initTilt();
 }
 
-// BELI SEKARANG
+/* -------------------------
+   STOCK DATABASE
+---------------------------*/
+const PRODUCT_STOCK = {
+  p1: 12,
+  p2: 4,
+  p3: 0,
+  p4: 22
+};
+
+function stockBadge(id){
+  let s = PRODUCT_STOCK[id] ?? 0;
+  if(s === 0) return `<span class="stock red">Stok Habis</span>`;
+  if(s <= 5) return `<span class="stock yellow">Menipis (${s})</span>`;
+  return `<span class="stock green">Tersedia (${s})</span>`;
+}
+
+/* -------------------------
+   MODAL DETAIL PRODUK
+---------------------------*/
+const modal = document.getElementById("prodModal");
+const mt = document.getElementById("m_title");
+const mi = document.getElementById("m_img");
+const mp = document.getElementById("m_price");
+const md = document.getElementById("m_desc");
+document.getElementById("m_close").onclick = () => modal.classList.remove("open");
+
+window.openDetail = (id)=>{
+  const p = PRODUCTS.find(x=>x.id===id);
+  mt.textContent = p.title;
+  mi.src = p.img;
+  mp.textContent = currency(p.price);
+  md.textContent = "Buah premium, baru dipanen hari ini 🍃";
+  modal.classList.add("open");
+};
+
+/* -------------------------
+   RENDER PRODUK BARU
+---------------------------*/
+function renderProductsGrid(containerId = "productsFull"){
+  const wrap = document.getElementById(containerId);
+  if(!wrap) return;
+
+  wrap.innerHTML = PRODUCTS.map(p => `
+    <div class="product-card tilt">
+      <img src="${p.img}" loading="lazy">
+      <h4>${p.title}</h4>
+      <p class="price">${currency(p.price)}</p>
+      ${stockBadge(p.id)}
+
+      <div class="product-buttons">
+        <button class="btn" onclick='addToCart(${JSON.stringify(p)})'>Tambah Keranjang</button>
+        <button class="btn primary" onclick='buyNow("${p.id}")'>Beli Sekarang</button>
+        <button class="btn ghost" onclick='goCheckout("${p.id}")'>Checkout</button>
+        <button class="btn danger" onclick='waPay("${p.id}")'>Bayar WA</button>
+        <button class="btn" onclick='openDetail("${p.id}")'>Detail</button>
+      </div>
+    </div>
+  `).join("");
+
+  initTilt();
+}
+
+/* -------------------------
+   BELI SEKARANG
+---------------------------*/
 window.buyNow = (id)=>{
   const p = PRODUCTS.find(x=>x.id===id);
   clearCart();
   addToCart({ ...p, qty:1 });
-  window.location.href = "checkout.html";
+  location.href = "checkout.html";
 };
 
-// CHECKOUT LANGSUNG
+/* -------------------------
+   GO CHECKOUT
+---------------------------*/
 window.goCheckout = (id)=>{
   const p = PRODUCTS.find(x=>x.id===id);
   addToCart({ ...p, qty:1 });
-  window.location.href = "checkout.html";
+  location.href = "checkout.html";
 };
 
-// BAYAR VIA WHATSAPP
+/* -------------------------
+   WA PAYMENT
+---------------------------*/
 window.waPay = (id)=>{
   const p = PRODUCTS.find(x=>x.id===id);
-  let text = encodeURIComponent(`Halo, saya ingin membeli:\n${p.title}\nHarga: ${currency(p.price)}\nJumlah: 1`);
-  window.open(`https://wa.me/${WA_SELLER}?text=${text}`,"_blank");
-};
-
-// DETAIL MODAL
-window.openDetail = (id)=>{
-  const p = PRODUCTS.find(x=>x.id===id);
-  m_title.textContent = p.title;
-  m_img.src = p.img;
-  m_price.textContent = currency(p.price);
-  m_desc.textContent = "Buah segar pilihan terbaik dari kebun kami.";
-  modal.classList.add("open");
+  let msg = encodeURIComponent(`Halo, saya ingin membeli ${p.title} (1 pcs).\nHarga: ${currency(p.price)}`);
+  window.open(`https://wa.me/628XXXXXX?text=${msg}`,"_blank");
 };
