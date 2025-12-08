@@ -524,3 +524,14 @@ function quickOrder(){
 
   window.open(wa, "_blank");
 }
+/* ========= PARALLAX HERO ========= */
+window.addEventListener("scroll", () => {
+  const scrolled = window.scrollY;
+  const slides = document.querySelectorAll(".slide");
+
+  slides.forEach(slide => {
+    slide.style.transform = `translateY(${scrolled * 0.15}px)`;
+    slide.style.opacity = 1 - (scrolled * 0.0018);
+  });
+});
+
