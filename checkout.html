@@ -3,54 +3,56 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Checkout — Jual Buah Segar</title>
+  <title>Checkout — Juragan Buah</title>
   <link rel="stylesheet" href="assets/css/utilities.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body class="bg-glass">
-  <header class="nav">
+
+  <header class="nav glass">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/img/logo.png" alt="logo" class="logo"/>Jual Buah Segar</a>
+      <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" style="padding-top:28px">
     <section class="card glass">
       <h1>Checkout</h1>
-      <div id="checkoutArea">
-        <div id="checkoutItems" class="checkout-items"></div>
 
-        <form id="checkoutForm" class="form">
-          <h3>Detail Pengiriman</h3>
-          <input required id="c_name" placeholder="Nama lengkap" />
-          <input required id="c_phone" placeholder="No. WA (628...)" />
-          <input required id="c_address" placeholder="Alamat lengkap" />
-          <textarea id="c_note" placeholder="Catatan (opsional)"></textarea>
-          <div class="row">
-            <button type="submit" class="btn primary">Kirim Pesanan & WA</button>
-            <button type="button" id="saveLocal" class="btn ghost">Simpan Order Lokal</button>
-            <button type="button" id="generateInvoice" class="btn">Cetak Invoice (PDF)</button>
-          </div>
-        </form>
+      <div id="checkoutItems" class="checkout-items"></div>
 
-        <div id="invoicePreview" class="card thin hidden">
-          <h3>Invoice Preview</h3>
-          <div id="invoiceContent" class="invoice-content"></div>
+      <form id="checkoutForm" class="form">
+        <h3>Detail Pengiriman</h3>
+        <input id="c_name" placeholder="Nama lengkap" required />
+        <input id="c_phone" placeholder="No. WA (628...)" required />
+        <input id="c_address" placeholder="Alamat lengkap" required />
+        <textarea id="c_note" placeholder="Catatan (opsional)"></textarea>
+
+        <div class="row">
+          <button type="submit" class="btn primary">Kirim Pesanan via WhatsApp</button>
+          <button type="button" id="saveLocalOrder" class="btn ghost">Simpan Order Lokal</button>
+          <button type="button" id="genInvoice" class="btn">Cetak Invoice</button>
         </div>
+      </form>
+
+      <div id="invoiceArea" class="card thin hidden">
+        <h3>Preview Invoice</h3>
+        <div id="invoiceContent" class="invoice-content"></div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="container">
-      <p>© <span id="yearCh"></span> Jual Buah Segar</p>
+      <p>© <span id="yearCheckout"></span> Juragan Buah</p>
     </div>
   </footer>
+
+  <aside id="cartSidebar" class="cart-sidebar"></aside>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
   <script src="assets/js/app.js"></script>
 </body>
 </html>

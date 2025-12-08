@@ -3,26 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tracking Pesanan — Jual Buah Segar</title>
+  <title>Tracking — Juragan Buah</title>
   <link rel="stylesheet" href="assets/css/utilities.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body class="bg-glass">
-  <header class="nav">
+
+  <header class="nav glass">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/img/logo.png" alt="logo" class="logo"/>Jual Buah Segar</a>
+      <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" style="padding-top:28px">
     <section class="card glass">
       <h1>Tracking Pesanan</h1>
-      <p>Masukkan ID order yang telah Anda simpan untuk melihat status.</p>
+      <p>Masukkan Order ID yang telah disimpan untuk melihat status.</p>
+
       <div class="form">
-        <input id="trackId" placeholder="Masukkan Order ID" />
+        <input id="trackId" placeholder="Masukkan Order ID (mis: ORD...)" />
         <div class="row">
           <button id="trackBtn" class="btn primary">Cari</button>
-          <button id="listOrders" class="btn ghost">Tampilkan Semua Order Lokal</button>
+          <button id="listOrders" class="btn ghost">Lihat Semua Order Lokal</button>
         </div>
       </div>
 
@@ -30,7 +32,7 @@
         <h3>Hasil Tracking</h3>
         <div id="trackContent"></div>
         <div class="row">
-          <button id="waTrack" class="btn">Hubungi via WA</button>
+          <button id="waContact" class="btn">Hubungi via WA</button>
         </div>
       </div>
     </section>
@@ -38,9 +40,11 @@
 
   <footer class="footer">
     <div class="container">
-      <p>© <span id="yearTr"></span> Jual Buah Segar</p>
+      <p>© <span id="yearTracking"></span> Juragan Buah</p>
     </div>
   </footer>
+
+  <aside id="cartSidebar" class="cart-sidebar"></aside>
 
   <script src="assets/js/app.js"></script>
 </body>

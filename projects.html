@@ -3,42 +3,50 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Produk — Jual Buah Segar</title>
+  <title>Produk — Juragan Buah</title>
   <link rel="stylesheet" href="assets/css/utilities.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body class="bg-glass">
-  <header class="nav">
+
+  <header class="nav glass">
     <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/img/logo.png" alt="logo" class="logo"/>Jual Buah Segar</a>
+      <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
       <nav class="nav-links">
         <a href="index.html">Home</a>
         <a href="projects.html" class="active">Produk</a>
         <a href="pricing.html">Harga</a>
         <a href="checkout.html">Checkout</a>
+        <a href="tracking.html">Tracking</a>
       </nav>
       <div class="nav-actions">
-        <button id="cartBtn2" class="btn">Cart (<span id="cartCount2">0</span>)</button>
+        <button id="cartBtnTop" class="btn">Cart (<span id="cartCountTop">0</span>)</button>
       </div>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" style="padding-top:28px">
     <section class="card glass">
-      <h1>Daftar Produk</h1>
-      <p>Berikut produk-produk buah segar kami. Gunakan tombol tambah untuk memasukkan ke keranjang.</p>
-      <div id="productsFull" class="products-grid">
-        <!-- JS inject -->
-      </div>
+      <h1>Produk Kami</h1>
+      <p>Segar — Langsung dari petani. Klik tombol Tambah untuk memasukkan ke keranjang.</p>
+
+      <div id="productsFull" class="products-grid" aria-live="polite"></div>
     </section>
   </main>
 
   <footer class="footer">
     <div class="container">
-      <p>© <span id="yearP"></span> Jual Buah Segar</p>
+      <p>© <span id="yearProjects"></span> Juragan Buah</p>
     </div>
   </footer>
 
+  <aside id="cartSidebar" class="cart-sidebar"></aside>
+
+  <div id="lightbox" class="lightbox hidden"><img id="lightboxImg"><button id="lightboxClose" class="btn ghost">×</button></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
