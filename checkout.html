@@ -9,65 +9,66 @@
 </head>
 <body class="bg-glass">
 
-  <header class="nav glass">
-    <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
-    </div>
-  </header>
+<header class="nav glass">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
+  </div>
+</header>
 
-  <main class="container" style="padding-top:28px">
-    <section class="card glass">
-      <h1>Checkout</h1>
-
-      <div id="checkoutItems" class="checkout-items"></div>
-
-      <form id="checkoutForm" class="form">
-        <h3>Detail Pengiriman</h3>
-        <input id="c_name" placeholder="Nama lengkap" required />
-        <input id="c_phone" placeholder="No. WA (628...)" required />
-        <input id="c_address" placeholder="Alamat lengkap" required />
-        <textarea id="c_note" placeholder="Catatan (opsional)"></textarea>
-
-        <div class="row">
-          <button type="submit" class="btn primary">Kirim Pesanan via WhatsApp</button>
-          <button type="button" id="saveLocalOrder" class="btn ghost">Simpan Order Lokal</button>
-          <button type="button" id="genInvoice" class="btn">Cetak Invoice</button>
-        </div>
-      </form>
-
-      <div id="invoiceArea" class="card thin hidden">
-        <h3>Preview Invoice</h3>
-        <div id="invoiceContent" class="invoice-content"></div>
+<main class="container" style="padding-top:24px">
+  <div class="checkout-grid">
+    <!-- LEFT: cart & form -->
+    <div>
+      <div class="card">
+        <h2>Ringkasan Pesanan</h2>
+        <div id="checkoutItems" style="margin-top:12px"></div>
       </div>
-    </section>
-  </main>
 
-  <footer class="footer">
-    <div class="container">
-      <p>© <span id="yearCheckout"></span> Juragan Buah</p>
+      <div class="card mt-2">
+        <h3>Detail Pengiriman</h3>
+        <input id="c_name" class="mt-1" placeholder="Nama penerima" />
+        <input id="c_phone" class="mt-1" placeholder="No. WA (628...)" />
+        <textarea id="c_address" class="mt-1" placeholder="Alamat lengkap"></textarea>
+      </div>
+
+      <div class="card mt-2">
+        <h3>Metode Pengiriman</h3>
+        <select id="shippingMethod" class="mt-1">
+          <option value="reg">Reguler — Rp10.000</option>
+          <option value="hemat">Hemat — Rp6.000</option>
+          <option value="same">Same Day — Rp20.000</option>
+        </select>
+
+        <h3 class="mt-2">Metode Pembayaran</h3>
+        <select id="payMethod" class="mt-1">
+          <option value="cod">Bayar di Tempat (COD)</option>
+          <option value="transfer">Transfer Bank</option>
+          <option value="qris">QRIS</option>
+        </select>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button id="placeOrder" class="btn primary w-100">Lanjutkan ke Pembayaran</button>
+        </div>
+      </div>
     </div>
-  </footer>
 
-  <aside id="cartSidebar" class="cart-sidebar"></aside>
+    <!-- RIGHT: summary -->
+    <aside class="checkout-aside">
+      <div class="card checkout-summary">
+        <h3>Ringkasan</h3>
+        <div class="summary-row"><div>Subtotal</div><div id="subTotal">Rp0</div></div>
+        <div class="summary-row"><div>Ongkos Kirim</div><div id="shipCost">Rp0</div></div>
+        <div class="summary-row"><div>Potongan</div><div id="discount">Rp0</div></div>
+        <div class="summary-row"><strong>Total</strong><strong id="grandTotal">Rp0</strong></div>
+      </div>
+    </aside>
+  </div>
+</main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="assets/js/app.js"></script>
+<aside id="cartSidebar" class="cart-sidebar"></aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="assets/js/app.js"></script>
 </body>
 </html>
-
-<h3>Metode Pengiriman</h3>
-<select id="shippingMethod" class="input">
-  <option value="reg">Reguler (Rp 10.000)</option>
-  <option value="hemat">Hemat (Rp 6.000)</option>
-  <option value="same">Same Day (Rp 20.000)</option>
-</select>
-
-<h3>Metode Pembayaran</h3>
-<select id="payMethod" class="input">
-  <option value="cod">Bayar di Tempat (COD)</option>
-  <option value="transfer">Transfer Bank</option>
-  <option value="qris">QRIS</option>
-</select>
-
