@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tracking Pesanan — Jual Buah Segar</title>
+  <link rel="stylesheet" href="assets/css/utilities.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="bg-glass">
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><img src="assets/img/logo.png" alt="logo" class="logo"/>Jual Buah Segar</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card glass">
+      <h1>Tracking Pesanan</h1>
+      <p>Masukkan ID order yang telah Anda simpan untuk melihat status.</p>
+      <div class="form">
+        <input id="trackId" placeholder="Masukkan Order ID" />
+        <div class="row">
+          <button id="trackBtn" class="btn primary">Cari</button>
+          <button id="listOrders" class="btn ghost">Tampilkan Semua Order Lokal</button>
+        </div>
+      </div>
+
+      <div id="trackResult" class="card thin hidden">
+        <h3>Hasil Tracking</h3>
+        <div id="trackContent"></div>
+        <div class="row">
+          <button id="waTrack" class="btn">Hubungi via WA</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="yearTr"></span> Jual Buah Segar</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

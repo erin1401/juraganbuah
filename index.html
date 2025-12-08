@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jual Buah Segar — Home</title>
+  <link rel="stylesheet" href="assets/css/utilities.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" href="assets/img/logo.png" />
+  <!-- CDN for icons (optional) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.css" rel="stylesheet">
+</head>
+<body class="bg-glass">
+
+  <!-- NAV -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/img/logo.png" alt="Logo" class="logo" />
+        <span>Jual Buah Segar</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Produk</a>
+        <a href="pricing.html">Harga</a>
+        <a href="checkout.html">Checkout</a>
+        <a href="tracking.html">Tracking</a>
+      </nav>
+      <div class="nav-actions">
+        <button id="cartBtn" class="btn primary">Cart (<span id="cartCount">0</span>)</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO: full-screen slider + overlay -->
+  <section class="hero">
+    <div class="slider" id="heroSlider">
+      <div class="slide" style="background-image:url('assets/img/banner1.jpg')">
+        <div class="overlay">
+          <h1>Buah Segar Langsung Panen</h1>
+          <p>Diambil dari petani lokal, dikemas rapi, dikirim cepat.</p>
+          <a href="#orderForm" class="btn">Pesan Sekarang</a>
+        </div>
+      </div>
+      <div class="slide" style="background-image:url('assets/img/banner2.jpg')">
+        <div class="overlay">
+          <h1>Pilihan Buah Musiman</h1>
+          <p>Mangga, Durian, Jeruk, Apel — kualitas premium.</p>
+          <a href="#projects" class="btn">Lihat Produk</a>
+        </div>
+      </div>
+      <div class="slide" style="background-image:url('assets/img/banner3.jpg')">
+        <div class="overlay">
+          <h1>Pengiriman Cepat & Aman</h1>
+          <p>Pelayanan packing vakum dan insulated box.</p>
+          <a href="pricing.html" class="btn">Lihat Harga</a>
+        </div>
+      </div>
+      <div class="slider-controls">
+        <button id="prevSlide" class="ctrl">◀</button>
+        <button id="nextSlide" class="ctrl">▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <main class="container main-grid">
+
+    <!-- Quick order form -->
+    <section id="orderForm" class="card glass">
+      <h2>Form Pesan Cepat</h2>
+      <form id="quickOrder" class="form">
+        <div class="row">
+          <input required type="text" id="name" placeholder="Nama lengkap" />
+          <input required type="tel" id="phone" placeholder="No. WA (contoh: 628123...)" />
+        </div>
+        <div class="row">
+          <select id="productSelect">
+            <option value="Mangga">Mangga — 1 kg</option>
+            <option value="Apel">Apel — 1 kg</option>
+            <option value="Jeruk">Jeruk — 1 kg</option>
+            <option value="PaketMix">Paket Mix — 2 kg</option>
+          </select>
+          <input type="number" id="qty" min="1" value="1" />
+        </div>
+        <textarea id="note" placeholder="Catatan / alamat singkat"></textarea>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">Tambahkan ke Cart</button>
+          <button id="waQuick" type="button" class="btn ghost">Kirim via WA</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Feature / products -->
+    <section id="projects" class="card glass">
+      <h2>Produk Unggulan</h2>
+      <div class="products-grid" id="productsGrid">
+        <!-- JS will inject product cards with 3D tilt -->
+      </div>
+    </section>
+
+    <!-- Gallery preview (small) -->
+    <section class="card glass">
+      <h2>Gallery Segar</h2>
+      <div class="gallery-grid" id="miniGallery">
+        <!-- preview images -->
+      </div>
+      <a href="assets/img/preview.html" class="btn">Lihat Gallery Lengkap</a>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>© <span id="year"></span> Jual Buah Segar — Semua hak dilindungi.</p>
+      <div>
+        <a href="https://api.whatsapp.com/send?phone=6281234567890" target="_blank" class="btn small">Hubungi WA</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CART SIDEBAR -->
+  <aside id="cartSidebar" class="cart-sidebar">
+    <div class="cart-header">
+      <h3>Keranjang Anda</h3>
+      <button id="closeCart" class="btn ghost">Tutup</button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-summary">
+        <strong>Total: </strong><span id="cartTotal">Rp0</span>
+      </div>
+      <div class="cart-actions">
+        <a href="checkout.html" class="btn primary">Checkout</a>
+        <button id="clearCart" class="btn danger">Kosongkan</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Lightbox for gallery -->
+  <div id="lightbox" class="lightbox hidden">
+    <img id="lightboxImg" src="" alt="preview" />
+    <button id="lightboxClose" class="btn ghost">×</button>
+  </div>
+
+  <!-- SCRIPTS -->
+  <!-- necessary libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
