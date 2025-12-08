@@ -9,10 +9,14 @@
   const $$ = s => Array.from(document.querySelectorAll(s));
 
   const PRODUCTS = [
-    { id: 'p1', title: 'Mangga Harum', price: 25000, img: 'assets/img/mangga.jpg', desc: 'Mangga harum manis, siap kirim.' },
-    { id: 'p2', title: 'Apel Merah', price: 30000, img: 'assets/img/apel.jpg', desc: 'Apel segar, renyah.' },
-    { id: 'p3', title: 'Jeruk Manis', price: 18000, img: 'assets/img/jeruk.jpg', desc: 'Jeruk manis penuh vitamin C.' },
-    { id: 'p4', title: 'Pisang Ambon', price: 20000, img: 'assets/img/pisang.jpg', desc: 'Pisang matang sempurna.' }
+    { id: 'p1', title: 'Mangga Harum', price: 25000, img: 'assets/img/mangga.jpg', desc: 'Mangga harum manis, siap kirim.' }, rating: 4.9,
+    sold: 1200, promo: 10,
+    { id: 'p2', title: 'Apel Merah', price: 30000, img: 'assets/img/apel.jpg', desc: 'Apel segar, renyah.' }, rating: 4.9,
+    sold: 1200, promo: 10,
+    { id: 'p3', title: 'Jeruk Manis', price: 18000, img: 'assets/img/jeruk.jpg', desc: 'Jeruk manis penuh vitamin C.' }, rating: 4.9,
+    sold: 1200, promo: 10,
+    { id: 'p4', title: 'Pisang Ambon', price: 20000, img: 'assets/img/pisang.jpg', desc: 'Pisang matang sempurna.' }, rating: 4.9,
+    sold: 1200, promo: 10,
   ];
 
   const PRODUCT_STOCK = { p1: 12, p2: 4, p3: 0, p4: 22 };
@@ -91,25 +95,29 @@
   };
 
   // products renderer
-  function renderProductsGrid(containerId = 'productsFull'){
-    const wrap = document.getElementById(containerId); if(!wrap) return;
-    wrap.innerHTML = PRODUCTS.map(p=>`
-      <div class="product-card tilt" data-id="${p.id}">
-        <img src="${p.img}" loading="lazy" onerror="this.src='https://picsum.photos/seed/${p.id}/600/400'">
-        <h4>${p.title}</h4>
-        <p class="price">${currency(p.price)}</p>
-        ${stockBadge(p.id)}
-        <div class="product-buttons" style="margin-top:10px">
-          <button class="btn" onclick='(${addToCart.toString()})(${JSON.stringify({id:p.id,title:p.title,price:p.price,img:p.img,qty:1})})'>Tambah Keranjang</button>
-          <button class="btn primary" onclick='buyNow("${p.id}")'>Beli Sekarang</button>
-          <button class="btn ghost" onclick='goCheckout("${p.id}")'>Checkout</button>
-          <button class="btn danger" onclick='waPay("${p.id}")'>Bayar via WA</button>
-          <button class="btn" onclick='openDetail("${p.id}")'>Detail</button>
+  function renderProductsGridShopee() {
+  const wrap = document.getElementById("productList");
+  wrap.innerHTML = PRODUCTS.map(p => `
+    <div class="product-card" onclick="openDetail('${p.id}')">
+      <img class="product-img" src="${p.img}">
+      <div class="product-info">
+        
+        <div class="product-title">${p.title}</div>
+        
+        <div class="product-rating">⭐ ${p.rating} | Terjual ${p.sold}</div>
+
+        ${p.promo ? `<div class="promo-tag">-${p.promo}%</div>` : ""}
+
+        <div class="product-price">${currency(p.price)}</div>
+
+        <div class="btn-buy" onclick="event.stopPropagation(); buyNow('${p.id}')">
+          Beli Sekarang
         </div>
+
       </div>
-    `).join('');
-    initTilt();
-  }
+    </div>
+  `).join('');
+}
 
   window.buyNow = (id)=>{ const p = PRODUCTS.find(x=>x.id===id); if(!p) return; clearCart(); addToCart({...p,qty:1}); location.href='checkout.html'; };
   window.goCheckout = (id)=>{ const p = PRODUCTS.find(x=>x.id===id); if(!p) return; addToCart({...p,qty:1}); location.href='checkout.html'; };
