@@ -442,3 +442,35 @@
   window.renderProductList = renderProductList;
   window.shippingCost = shippingCost;
 })();
+
+/* ---------------------------
+   1. SIMULASI ONGKIR BERBASIS KOTA
+----------------------------*/
+
+function calcDistanceCity(address){
+  address = address.toLowerCase();
+
+  if(address.includes("bandung") || address.includes("bekasi") || address.includes("bogor"))
+      return 8000;
+
+  if(address.includes("semarang") || address.includes("surabaya"))
+      return 15000;
+
+  if(address.includes("papua") || address.includes("ntt") || address.includes("maluku"))
+      return 25000;
+
+  return 12000; // default reguler
+}
+
+/* ---------------------------
+   2. SIMPAN BUKTI TRANSFER
+----------------------------*/
+
+window.savePaymentProof = function(file){
+  const reader = new FileReader();
+  reader.onload = function(e){
+    localStorage.setItem("PAY_PROOF", e.target.result);
+  }
+  reader.readAsDataURL(file);
+}
+
