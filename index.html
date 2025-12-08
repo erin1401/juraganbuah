@@ -3,55 +3,160 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juragan Buah – Jual Buah Segar</title>
+  <title>Juragan Buah – Segar Setiap Hari</title>
+
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="assets/css/utilities.css">
+
+  <style>
+    /* HERO FULLSCREEN */
+    .hero {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      overflow: hidden;
+    }
+
+    .hero-slide img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      top: 0;
+      left: 0;
+      filter: brightness(0.65);
+      animation: fadeSlide 12s infinite;
+    }
+
+    @keyframes fadeSlide {
+      0% {opacity:1}
+      33% {opacity:0}
+      66% {opacity:1}
+    }
+
+    .hero-left {
+      width: 50%;
+      padding: 40px;
+      font-size: 3rem;
+      font-weight: 700;
+      z-index: 2;
+    }
+
+    .hero-left span {
+      font-size: 1.2rem;
+      opacity: .85;
+      display: block;
+      margin-top: 12px;
+    }
+
+    .quick-box {
+      width: 380px;
+      padding: 25px;
+      backdrop-filter: blur(16px);
+      background: rgba(255,255,255,0.15);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.25);
+      z-index: 2;
+    }
+    .quick-box h3 {
+      margin-bottom: 14px;
+    }
+  </style>
+
 </head>
+
 <body>
 
-<header class="navbar glass">
-  <img src="assets/img/logo.png" class="logo">
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="projects.html">Produk</a>
-    <a href="pricing.html">Harga</a>
-    <a href="checkout.html">Checkout</a>
-    <a href="tracking.html">Tracking</a>
-  </nav>
+<header class="nav glass blur">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
+    <nav>
+      <a class="active" href="index.html">Home</a>
+      <a href="projects.html">Produk</a>
+      <a href="pricing.html">Harga</a>
+      <a href="checkout.html">Checkout</a>
+      <a href="tracking.html">Tracking</a>
+    </nav>
+    <button id="cartBtnTop" class="btn small">Cart (<span id="cartCountTop">0</span>)</button>
+  </div>
 </header>
 
-<!-- HERO SLIDER -->
 <section class="hero">
-  <div class="slider">
-    <div class="slide active" style="background-image:url('assets/img/banner1.jpg')"></div>
-    <div class="slide" style="background-image:url('assets/img/banner2.jpg')"></div>
-    <div class="slide" style="background-image:url('assets/img/banner3.jpg')"></div>
+
+  <!-- BACKGROUND SLIDER -->
+  <div class="hero-slide">
+    <img src="assets/img/banner1.jpg">
+    <img src="assets/img/banner2.jpg">
+    <img src="assets/img/banner3.jpg">
   </div>
 
-  <!-- HERO CONTENT LAYOUT -->
-  <div class="hero-grid">
-    
-    <!-- LEFT -->
-    <div class="hero-left">
-      <h1>Buah Segar Setiap Hari 🍉</h1>
-      <p>Kualitas Premium — Harga Terbaik — Pengiriman Cepat</p>
-      <a href="projects.html" class="btn-primary">Lihat Produk</a>
-    </div>
-
-    <!-- RIGHT (QUICK ORDER) -->
-    <div class="hero-right glass-card">
-      <h2>Quick Order</h2>
-      <form id="quickOrderForm">
-        <input type="text" placeholder="Nama" required>
-        <input type="text" placeholder="Buah diinginkan" required>
-        <input type="number" placeholder="Jumlah" required>
-        <button class="btn-primary w-100">Kirim</button>
-      </form>
-    </div>
-
+  <!-- LEFT TEXT -->
+  <div class="hero-left tilt">
+    Buah Segar <br>
+    Setiap Hari 🍉🍍  
+    <span>Langsung dari petani terbaik</span>
   </div>
+
+  <!-- RIGHT QUICK ORDER -->
+  <form class="quick-box tilt" id="quickOrderForm">
+    <h3>Quick Order</h3>
+
+    <label>Pilih Buah</label>
+    <select id="qoProduct" class="input">
+      <option value="p1">Apel Fuji</option>
+      <option value="p2">Jeruk Premium</option>
+      <option value="p3">Semangka Merah</option>
+      <option value="p4">Mangga Harum Manis</option>
+    </select>
+
+    <label>Jumlah</label>
+    <input type="number" id="qoQty" class="input" min="1" value="1">
+
+    <label>Alamat (Google Autocomplete)</label>
+    <input id="qoAddress" class="input" placeholder="Masukkan alamat">
+
+    <button class="btn primary w-100" type="submit">Pesan Sekarang</button>
+  </form>
+
 </section>
 
 <script src="assets/js/app.js"></script>
+
+<!-- GOOGLE PLACES -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+
+<script>
+  // Autocomplete Google
+  let autocomplete;
+  function initAutocomplete(){
+    autocomplete = new google.maps.places.Autocomplete(
+      document.getElementById("qoAddress"),
+      { types:['geocode'], componentRestrictions:{country:"id"} }
+    );
+  }
+  google.maps.event.addDomListener(window,'load',initAutocomplete);
+
+  // Quick Order
+  document.getElementById("quickOrderForm").onsubmit = e => {
+    e.preventDefault();
+
+    const id = document.getElementById("qoProduct").value;
+    const qty = Number(document.getElementById("qoQty").value);
+    const addr = document.getElementById("qoAddress").value;
+
+    const p = PRODUCTS.find(x=>x.id===id);
+
+    clearCart();
+    addToCart({...p, qty });
+
+    localStorage.setItem("TEMP_ADDR", addr);
+
+    location.href="checkout.html";
+  }
+</script>
+
 </body>
 </html>
