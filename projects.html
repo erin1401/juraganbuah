@@ -4,49 +4,106 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Produk — Juragan Buah</title>
+  
   <link rel="stylesheet" href="assets/css/utilities.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
+  
+  <style>
+    /* MOBILE OPTIMIZED */
+    @media(max-width:768px){
+      .products-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .product-card {
+        margin-bottom: 18px;
+      }
+    }
+    .product-buttons button {
+      display: block;
+      width: 100%;
+      margin-bottom: 6px;
+    }
+    .stock {
+      font-size: .85rem;
+      margin-top: 4px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      color: #fff;
+    }
+    .stock.green { background:#28c76f; }
+    .stock.yellow { background:#f2c94c; }
+    .stock.red { background:#eb5757; }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset:0;
+      background: rgba(0,0,0,.6);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      opacity:0;
+      pointer-events:none;
+      transition:.25s;
+    }
+    .modal.open {
+      opacity:1;
+      pointer-events:auto;
+    }
+    .modal-box {
+      background:#fff;
+      padding:20px;
+      max-width:400px;
+      border-radius:12px;
+      animation:pop .35s ease;
+    }
+    @keyframes pop {
+      from { transform:scale(.7); opacity:0;}
+      to { transform:scale(1); opacity:1;}
+    }
+  </style>
 </head>
 <body class="bg-glass">
 
-  <header class="nav glass">
-    <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="projects.html" class="active">Produk</a>
-        <a href="pricing.html">Harga</a>
-        <a href="checkout.html">Checkout</a>
-        <a href="tracking.html">Tracking</a>
-      </nav>
-      <div class="nav-actions">
-        <button id="cartBtnTop" class="btn">Cart (<span id="cartCountTop">0</span>)</button>
-      </div>
+<header class="nav glass">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="projects.html" class="active">Produk</a>
+      <a href="pricing.html">Harga</a>
+      <a href="checkout.html">Checkout</a>
+      <a href="tracking.html">Tracking</a>
+    </nav>
+    <div class="nav-actions">
+      <button id="cartBtnTop" class="btn">Cart (<span id="cartCountTop">0</span>)</button>
     </div>
-  </header>
+  </div>
+</header>
 
-  <main class="container" style="padding-top:28px">
-    <section class="card glass">
-      <h1>Produk Kami</h1>
-      <p>Segar — Langsung dari petani. Klik tombol Tambah untuk memasukkan ke keranjang.</p>
+<main class="container" style="padding-top:32px">
+  <h1>Semua Produk</h1>
+  <p>Silakan pilih buah segar terbaik kami!</p>
 
-      <div id="productsFull" class="products-grid" aria-live="polite"></div>
-    </section>
-  </main>
+  <div id="productsFull" class="products-grid"></div>
+</main>
 
-  <footer class="footer">
-    <div class="container">
-      <p>© <span id="yearProjects"></span> Juragan Buah</p>
-    </div>
-  </footer>
+<aside id="cartSidebar" class="cart-sidebar"></aside>
 
-  <aside id="cartSidebar" class="cart-sidebar"></aside>
+<!-- Modal detail produk -->
+<div id="prodModal" class="modal">
+  <div class="modal-box">
+    <h3 id="m_title"></h3>
+    <img id="m_img" style="width:100%;border-radius:10px;margin:12px 0">
+    <p id="m_price" style="font-size:1.2rem;font-weight:bold"></p>
+    <p id="m_desc"></p>
+    <button id="m_close" class="btn" style="margin-top:12px;width:100%">Tutup</button>
+  </div>
+</div>
 
-  <div id="lightbox" class="lightbox hidden"><img id="lightboxImg"><button id="lightboxClose" class="btn ghost">×</button></div>
+<script src="assets/js/app.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="assets/js/app.js"></script>
 </body>
 </html>
