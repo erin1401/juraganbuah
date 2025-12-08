@@ -138,3 +138,13 @@ body {
     font-size: 32px;
   }
 }
+
+.promo-tag{
+  background:#ff0040;
+  color:#fff;
+  padding:3px 6px;
+  border-radius:6px;
+  font-size:.75rem;
+  display:inline-block;
+  margin-top:4px;
+}
