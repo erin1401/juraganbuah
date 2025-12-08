@@ -324,3 +324,80 @@ body{
      transform:translateX(50%);
      width:92%;
   }
+
+  /* ================= NAVBAR GLASS PREMIUM ================= */
+.navbar-glass{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:999;
+  
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(14px) saturate(180%);
+  -webkit-backdrop-filter:blur(14px) saturate(180%);
+  border-bottom:1px solid rgba(255,255,255,0.22);
+
+  box-shadow:0 4px 20px rgba(0,0,0,.15);
+}
+
+.nav-inner{
+  max-width:1300px;
+  margin:auto;
+  padding:16px 30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.brand{
+  font-size:1.8rem;
+  font-weight:800;
+  color:#0a7d33;
+  text-decoration:none;
+  letter-spacing:-0.5px;
+}
+
+nav a{
+  margin-left:28px;
+  color:#000;
+  font-weight:600;
+  text-decoration:none;
+  position:relative;
+  font-size:1rem;
+  transition:.25s;
+}
+
+nav a:hover{
+  color:#0ab94f;
+}
+
+nav a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-4px;
+  width:0%;
+  height:2px;
+  background:#0ab94f;
+  transition:.25s;
+}
+
+nav a:hover::after{
+  width:100%;
+}
+
+/* MOBILE */
+@media(max-width:850px){
+  nav a{
+    margin-left:15px;
+  }
+}
+
+@media(max-width:600px){
+  .nav-inner{
+    flex-direction:column;
+    gap:10px;
+  }
+}
+
