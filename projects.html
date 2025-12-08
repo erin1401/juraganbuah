@@ -7,15 +7,11 @@
   
   <link rel="stylesheet" href="assets/css/utilities.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
-  
+
   <style>
-    /* MOBILE OPTIMIZED */
     @media(max-width:768px){
       .products-grid {
         grid-template-columns: 1fr !important;
-      }
-      .product-card {
-        margin-bottom: 18px;
       }
     }
     .product-buttons button {
@@ -35,7 +31,6 @@
     .stock.yellow { background:#f2c94c; }
     .stock.red { background:#eb5757; }
 
-    /* Modal */
     .modal {
       position: fixed;
       inset:0;
@@ -65,45 +60,45 @@
     }
   </style>
 </head>
-<body class="bg-glass">
 
-<header class="nav glass">
+<body>
+
+<header class="navbar glass">
   <div class="container nav-inner">
-    <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
+    <a class="brand" href="index.html">
+      <img src="assets/img/logo.png" class="logo"> Juragan Buah
+    </a>
     <nav class="nav-links">
       <a href="index.html">Home</a>
-      <a href="projects.html" class="active">Produk</a>
+      <a class="active" href="projects.html">Produk</a>
       <a href="pricing.html">Harga</a>
       <a href="checkout.html">Checkout</a>
       <a href="tracking.html">Tracking</a>
     </nav>
-    <div class="nav-actions">
-      <button id="cartBtnTop" class="btn">Cart (<span id="cartCountTop">0</span>)</button>
-    </div>
   </div>
 </header>
 
-<main class="container" style="padding-top:32px">
+<main class="container" style="margin-top:40px">
   <h1>Semua Produk</h1>
-  <p>Silakan pilih buah segar terbaik kami!</p>
+  <p>Pilih buah terbaik dari kebun kami.</p>
 
   <div id="productsFull" class="products-grid"></div>
 </main>
 
+<!-- CART SIDEBAR -->
 <aside id="cartSidebar" class="cart-sidebar"></aside>
 
-<!-- Modal detail produk -->
+<!-- MODAL DETAIL -->
 <div id="prodModal" class="modal">
   <div class="modal-box">
     <h3 id="m_title"></h3>
     <img id="m_img" style="width:100%;border-radius:10px;margin:12px 0">
-    <p id="m_price" style="font-size:1.2rem;font-weight:bold"></p>
+    <p id="m_price" style="font-weight:bold"></p>
     <p id="m_desc"></p>
-    <button id="m_close" class="btn" style="margin-top:12px;width:100%">Tutup</button>
+    <button id="m_close" class="btn w-100">Tutup</button>
   </div>
 </div>
 
 <script src="assets/js/app.js"></script>
-
 </body>
 </html>
