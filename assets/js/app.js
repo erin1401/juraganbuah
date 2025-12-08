@@ -163,3 +163,16 @@
     $$('#year,#yearProjects,#yearPricing,#yearCheckout,#yearTracking').forEach(el=>{ if(el) el.textContent = new Date().getFullYear(); });
   });
 })();
+
+function shippingCost(method){
+  switch(method){
+    case "hemat": return 6000;
+    case "same": return 20000;
+    default: return 10000;
+  }
+}
+
+const ship = shippingCost($("#shippingMethod").value);
+const pay = $("#payMethod").value;
+
+const finalTotal = total + ship;
