@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembayaran</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body class="container">
+
+<h2>Konfirmasi Pembayaran</h2>
+
+<div class="card glass" style="padding:20px;margin-top:20px">
+  <h3>QRIS / Transfer Bank</h3>
+  <p>Total yang harus dibayar:</p>
+  <h1 id="payTotal">Rp0</h1>
+
+  <img src="assets/img/qris.png" style="width:220px;margin-top:10px">
+
+  <p style="margin-top:20px">Jika sudah transfer, klik tombol bawah:</p>
+
+  <a id="waConfirm" class="btn primary" href="">Kirim Bukti Transfer via WhatsApp</a>
+</div>
+
+<script>
+  const url = new URLSearchParams(window.location.search);
+  const total = url.get("total");
+  document.getElementById("payTotal").textContent = "Rp"+Number(total).toLocaleString("id-ID");
+
+  document.getElementById("waConfirm").href =
+    "https://api.whatsapp.com/send?phone=628xxxx" +
+    "&text=Halo, saya sudah transfer sebesar Rp" + total;
+</script>
+
+</body>
+</html>
