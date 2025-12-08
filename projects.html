@@ -1,20 +1,141 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Produk — Juragan Buah</title>
-  <link rel="stylesheet" href="assets/css/utilities.css" />
-  <link rel="stylesheet" href="assets/css/style.css" />
-</head>
-<body class="bg-glass">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produk — Juragan Buah</title>
 
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/utilities.css">
+
+<style>
+body {
+  background: #f4f4f4;
+  padding-top: 95px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ====== GRID PRODUK ====== */
+.products-container {
+  width: 95%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.products-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #064d21;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* GRID */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* CARD */
+.product-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,.07);
+  transition: .25s;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+}
+
+/* FOTO PRODUK */
+.product-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+/* INFO */
+.product-info {
+  padding: 14px;
+  flex: 1;
+}
+
+.product-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 6px;
+  color: #000;
+}
+
+.product-price {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #00a13c;
+  margin-bottom: 6px;
+}
+
+.product-sales {
+  font-size: .85rem;
+  opacity: .7;
+}
+
+/* BUTTONS DI BAWAH CARD */
+.card-buttons {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border-top: 1px solid #eee;
+}
+
+.btn-buy {
+  flex: 1;
+  background: #00a13c;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-cart {
+  flex: 1;
+  background: #fff;
+  border: 2px solid #00a13c;
+  color: #00a13c;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn-cart:hover {
+  background: #e6ffe9;
+}
+
+/* MOBILE */
+@media(max-width: 540px){
+  .product-img { height: 150px; }
+  .product-price { font-size: 1.05rem; }
+  .product-title { font-size: .95rem; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
 <header class="navbar-green">
   <div class="nav-inner">
     <a href="index.html" class="brand">Juragan Buah</a>
     <nav>
       <a href="index.html">Home</a>
-      <a href="projects.html">Produk</a>
+      <a class="active" href="projects.html">Produk</a>
       <a href="pricing.html">Harga</a>
       <a href="checkout.html">Checkout</a>
       <a href="tracking.html">Tracking</a>
@@ -22,58 +143,55 @@
   </div>
 </header>
 
-<main class="container" style="padding-top:24px">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <h1 style="margin:0">Marketplace Buah</h1>
-        <p class="text-muted" style="margin:4px 0 0">Tampilan seperti Shopee / Tokopedia — filter, rating, promo.</p>
-      </div>
-      <div>
-        <input id="searchInput" placeholder="Cari buah..." style="padding:.6rem;border-radius:10px;border:1px solid rgba(0,0,0,0.06)" />
-      </div>
-    </div>
+<!-- CONTAINER -->
+<div class="products-container">
+  <h1 class="products-title">Produk Buah Segar</h1>
 
-    <div id="filters" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <select id="sortBy" style="padding:.45rem;border-radius:8px;border:1px solid rgba(0,0,0,0.06)">
-        <option value="popular">Terlaris</option>
-        <option value="price-asc">Harga (murah→mahal)</option>
-        <option value="price-desc">Harga (mahal→murah)</option>
-      </select>
-      <select id="catFilter" style="padding:.45rem;border-radius:8px;border:1px solid rgba(0,0,0,0.06)">
-        <option value="all">Semua Kategori</option>
-        <option value="buah-buah">Buah Segar</option>
-        <option value="paket">Paket</option>
-      </select>
-    </div>
-
-    <div id="productList" class="product-grid mt-2"></div>
-  </div>
-</main>
-
-<aside id="cartSidebar" class="cart-sidebar"></aside>
-
-<!-- product detail modal -->
-<div id="prodModal" class="modal" aria-hidden="true">
-  <div class="modal-box">
-    <div style="display:flex;gap:12px;align-items:flex-start">
-      <img id="m_img" src="" style="width:160px;height:120px;object-fit:cover;border-radius:8px" alt="">
-      <div style="flex:1">
-        <h3 id="m_title"></h3>
-        <div id="m_price" class="product-price"></div>
-        <div id="m_desc" class="text-muted mt-1"></div>
-        <div style="margin-top:12px;display:flex;gap:8px">
-          <button id="m_add" class="btn">Tambah Keranjang</button>
-          <button id="m_buy" class="btn primary">Beli Sekarang</button>
-        </div>
-      </div>
-    </div>
-    <div style="margin-top:12px;display:flex;justify-content:flex-end">
-      <button id="m_close" class="btn ghost">Tutup</button>
-    </div>
-  </div>
+  <div id="productsGrid" class="products-grid"></div>
 </div>
 
 <script src="assets/js/app.js"></script>
-</body>
-</html>
+
+<script>
+/* ==== PRODUK (Contoh, bisa diganti yang lain) ===== */
+const PRODUCTS = [
+  {id:1,name:"Semangka Merah",price:30000,sales:"2.1rb",img:"assets/img/banner1.jpg"},
+  {id:2,name:"Melon Premium",price:28000,sales:"1.4rb",img:"assets/img/banner2.jpg"},
+  {id:3,name:"Jeruk Baby",price:18000,sales:"3.2rb",img:"assets/img/banner3.jpg"},
+  {id:4,name:"Apel Fuji",price:35000,sales:"900+",img:"assets/img/banner2.jpg"},
+  {id:5,name:"Nanas Madu",price:15000,sales:"1.1rb",img:"assets/img/banner1.jpg"},
+  {id:6,name:"Pepaya California",price:12000,sales:"2.3rb",img:"assets/img/banner3.jpg"}
+];
+
+/* ====== RENDER PRODUK ====== */
+function renderProducts(){
+  let html = "";
+  PRODUCTS.forEach(p=>{
+    html += `
+      <div class="product-card">
+        <img src="${p.img}" class="product-img">
+        
+        <div class="product-info">
+          <div class="product-title">${p.name}</div>
+          <div class="product-price">Rp ${p.price.toLocaleString()}</div>
+          <div class="product-sales">${p.sales} terjual</div>
+        </div>
+
+        <div class="card-buttons">
+          <button class="btn-cart" onclick="addToCart(${p.id})">Keranjang</button>
+          <button class="btn-buy" onclick="buyNow(${p.id})">Beli</button>
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById("productsGrid").innerHTML = html;
+}
+renderProducts();
+
+/* ====== KERANJANG ====== */
+function addToCart(id){
+  const item = PRODUCTS.find(p=>p.id===id);
+  let cart = getCart();
+  cart.push({...item, qty:1});
+  localStorage.setItem("CART", JSON.stringify(cart))
