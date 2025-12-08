@@ -475,24 +475,31 @@ window.savePaymentProof = function(file){
 }
 
 /* ========== SLIDER ========= */
+/* ==================== SLIDER FIX ==================== */
+
 let slideIndex = 0;
-const slides = document.querySelectorAll('.slide');
-const dotsContainer = document.getElementById("dots");
+let slides, dots;
 
-function setupDots(){
-    slides.forEach((_,i)=>{
-        const dot=document.createElement("div");
-        dot.onclick=()=>goToSlide(i);
-        dotsContainer.appendChild(dot);
-    });
+function initSlider(){
+  slides = document.querySelectorAll('.slide');
+  const dotsContainer = document.getElementById('dots');
+
+  // Buat titik
+  dotsContainer.innerHTML = "";
+  slides.forEach((_, i)=>{
+     const dot = document.createElement('div');
+     dot.onclick = ()=>goToSlide(i);
+     dotsContainer.appendChild(dot);
+  });
+
+  dots = document.querySelectorAll('#dots div');
+  showSlide(0);
 }
-setupDots();
-
-const dots=document.querySelectorAll(".dots div");
 
 function showSlide(n){
   slides.forEach(s=>s.classList.remove('active'));
   dots.forEach(d=>d.classList.remove('active'));
+
   slides[n].classList.add('active');
   dots[n].classList.add('active');
 }
@@ -512,7 +519,11 @@ function goToSlide(i){
   showSlide(slideIndex);
 }
 
-setInterval(nextSlide, 4000);
+// Auto-play
+setInterval(()=> nextSlide(), 4000);
+
+// Jalankan slider setelah halaman siap
+window.addEventListener('load', initSlider);
 
 /* QUICK ORDER */
 function quickOrder(){
@@ -524,14 +535,10 @@ function quickOrder(){
 
   window.open(wa, "_blank");
 }
-/* ========= PARALLAX HERO ========= */
+/* PARALLAX yang tidak merusak slider */
 window.addEventListener("scroll", () => {
-  const scrolled = window.scrollY;
-  const slides = document.querySelectorAll(".slide");
-
-  slides.forEach(slide => {
-    slide.style.transform = `translateY(${scrolled * 0.15}px)`;
-    slide.style.opacity = 1 - (scrolled * 0.0018);
+  const y = window.scrollY;
+  document.querySelectorAll(".slide").forEach(slide=>{
+    slide.style.transform = `translateY(${y * 0.08}px)`; 
   });
 });
-
