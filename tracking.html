@@ -3,68 +3,32 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tracking — Juragan Buah</title>
+  <title>Tracking Pesanan — Juragan Buah</title>
   <link rel="stylesheet" href="assets/css/utilities.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body class="bg-glass">
+<header class="nav glass"><div class="container nav-inner"><a class="brand" href="index.html">Juragan Buah</a></div></header>
 
-  <header class="nav glass">
-    <div class="container nav-inner">
-      <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
+<main class="container" style="padding-top:20px">
+  <div class="card">
+    <h2>Tracking Pesanan</h2>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <input id="trackId" placeholder="Masukkan Order ID (mis: ORD...)" />
+      <button id="trackBtn" class="btn primary">Cari</button>
+      <button id="listOrders" class="btn ghost">Tampilkan Semua</button>
     </div>
-  </header>
 
-  <main class="container" style="padding-top:28px">
-    <section class="card glass">
-      <h1>Tracking Pesanan</h1>
-      <p>Masukkan Order ID yang telah disimpan untuk melihat status.</p>
-
-      <div class="form">
-        <input id="trackId" placeholder="Masukkan Order ID (mis: ORD...)" />
-        <div class="row">
-          <button id="trackBtn" class="btn primary">Cari</button>
-          <button id="listOrders" class="btn ghost">Lihat Semua Order Lokal</button>
-        </div>
+    <div id="trackResult" class="card mt-2 hidden">
+      <h3>Detil Order</h3>
+      <div id="trackContent"></div>
+      <div class="mt-2">
+        <button id="waTrack" class="btn">Hubungi via WA</button>
       </div>
-
-      <div id="trackResult" class="card thin hidden">
-        <h3>Hasil Tracking</h3>
-        <div id="trackContent"></div>
-        <div class="row">
-          <button id="waContact" class="btn">Hubungi via WA</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <p>© <span id="yearTracking"></span> Juragan Buah</p>
     </div>
-  </footer>
+  </div>
+</main>
 
-  <aside id="cartSidebar" class="cart-sidebar"></aside>
-
-  <script src="assets/js/app.js"></script>
+<script src="assets/js/app.js"></script>
 </body>
 </html>
-
-function autoUpdateStatus(order){
-  const t = Date.now() - new Date(order.created).getTime();
-
-  if(t < 2*60*60*1000) return "Dikemas";
-  if(t < 12*60*60*1000) return "Dikirim";
-  return "Selesai";
-}
-
-    order.status = autoUpdateStatus(order);
-
-trackContent.innerHTML = `
-  <p><strong>Status:</strong> ${order.status}</p>
-  <div class="progress">
-    <div class="bar" style="width:${order.status=="Dikemas"?33:order.status=="Dikirim"?66:100}%"></div>
-  </div>
-`;
-
-    
