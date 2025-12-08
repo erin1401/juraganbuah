@@ -24,14 +24,54 @@ body{
 }
 .container{max-width:1100px;margin:0 auto;padding:1rem}
 
-/* NAV */
-.nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(8px);background:rgba(255,255,255,0.35);border-bottom:1px solid rgba(0,0,0,0.04)}
-.nav .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:.6rem 1rem}
-.brand{display:flex;align-items:center;gap:.5rem;font-weight:700}
-.logo{width:40px;height:40px;object-fit:contain;border-radius:8px}
-.nav-links{display:flex;gap:12px}
-.nav-links a{color:var(--muted);text-decoration:none;padding:6px 8px;border-radius:8px}
-.nav-links a.active{color:var(--accent);font-weight:700}
+/* NAVBAR PREMIUM GREEN TRANSPARENT */
+.navbar-green {
+  width: 100%;
+  height: 70px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+  background: rgba(0, 160, 60, 0.35); /* Hijau transparan */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+}
+
+.nav-inner {
+  width: 92%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-inner .brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #000;  /* FONT HITAM */
+}
+
+.nav-inner nav {
+  display: flex;
+  gap: 22px;
+}
+
+.nav-inner nav a {
+  color: #000;  /* FONT HITAM */
+  font-weight: 600;
+  text-decoration: none;
+  transition: .2s;
+  font-size: 1rem;
+}
+
+.nav-inner nav a:hover,
+.nav-inner nav a.active {
+  color: #064d21;
+  border-bottom: 2px solid #064d21;
+  padding-bottom: 3px;
+}
 
 /* Buttons */
 .btn{padding:.5rem .85rem;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s}
