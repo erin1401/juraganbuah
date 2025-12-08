@@ -444,3 +444,89 @@
   });
 
 })();
+/* -------------------------------------------------------------------
+   UPGRADE PROJECTS: tombol checkout, beli langsung, stok, modal, WA
+-------------------------------------------------------------------*/
+
+const PRODUCT_STOCK = {
+  p1: 12,
+  p2: 4,
+  p3: 0,
+  p4: 22
+};
+
+function stockBadge(id){
+  let st = PRODUCT_STOCK[id] || 0;
+  if(st === 0) return `<span class="stock red">Habis</span>`;
+  if(st <= 5) return `<span class="stock yellow">Menipis (${st})</span>`;
+  return `<span class="stock green">Tersedia (${st})</span>`;
+}
+
+// MODAL
+const modal = document.getElementById("prodModal");
+const m_title = document.getElementById("m_title");
+const m_img = document.getElementById("m_img");
+const m_price = document.getElementById("m_price");
+const m_desc = document.getElementById("m_desc");
+document.getElementById("m_close").onclick = ()=> modal.classList.remove("open");
+
+// override renderProductsGrid
+function renderProductsGrid(containerId = 'productsFull'){
+  const wrap = document.getElementById(containerId);
+  if(!wrap) return;
+  
+  wrap.innerHTML = PRODUCTS.map(p => `
+    <div class="product-card tilt">
+      <img src="${p.img}" loading="lazy">
+      <h4>${p.title}</h4>
+      <p class="price">${currency(p.price)}</p>
+      ${stockBadge(p.id)}
+
+      <div class="product-buttons">
+        <button class="btn" onclick='addToCart(${JSON.stringify(p)})'>Tambah Keranjang</button>
+
+        <button class="btn primary" onclick='buyNow("${p.id}")'>Beli Sekarang</button>
+
+        <button class="btn ghost" onclick='goCheckout("${p.id}")'>Checkout</button>
+
+        <button class="btn danger" onclick='waPay("${p.id}")'>Bayar via WA</button>
+
+        <button class="btn" onclick='openDetail("${p.id}")'>Detail</button>
+      </div>
+    </div>
+  `).join("");
+
+  initTilt();
+}
+
+// BELI SEKARANG
+window.buyNow = (id)=>{
+  const p = PRODUCTS.find(x=>x.id===id);
+  clearCart();
+  addToCart({ ...p, qty:1 });
+  window.location.href = "checkout.html";
+};
+
+// CHECKOUT LANGSUNG
+window.goCheckout = (id)=>{
+  const p = PRODUCTS.find(x=>x.id===id);
+  addToCart({ ...p, qty:1 });
+  window.location.href = "checkout.html";
+};
+
+// BAYAR VIA WHATSAPP
+window.waPay = (id)=>{
+  const p = PRODUCTS.find(x=>x.id===id);
+  let text = encodeURIComponent(`Halo, saya ingin membeli:\n${p.title}\nHarga: ${currency(p.price)}\nJumlah: 1`);
+  window.open(`https://wa.me/${WA_SELLER}?text=${text}`,"_blank");
+};
+
+// DETAIL MODAL
+window.openDetail = (id)=>{
+  const p = PRODUCTS.find(x=>x.id===id);
+  m_title.textContent = p.title;
+  m_img.src = p.img;
+  m_price.textContent = currency(p.price);
+  m_desc.textContent = "Buah segar pilihan terbaik dari kebun kami.";
+  modal.classList.add("open");
+};
