@@ -1,66 +1,103 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Produk — Juragan Buah</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Produk – Juragan Buah</title>
 
-  <link rel="stylesheet" href="assets/css/utilities.css" />
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/utilities.css">
 
   <style>
-    @media(max-width:768px){
-      .products-grid { grid-template-columns: 1fr !important; }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
     }
-    .product-buttons button { display:block; width:100%; margin-bottom:6px; }
-    .stock{ font-size:.85rem; margin-top:4px; padding:4px 8px; border-radius:6px; display:inline-block; color:#fff; }
-    .stock.green{ background:#28c76f; } .stock.yellow{ background:#f2c94c; color:#111; } .stock.red{ background:#eb5757; }
 
-    .modal{ position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; pointer-events:none; transition:.25s; }
-    .modal.open{ opacity:1; pointer-events:auto; }
-    .modal-box{ background:#fff; padding:20px; max-width:480px; border-radius:12px; animation:pop .35s ease; }
-    @keyframes pop { from{ transform:scale(.85); opacity:0 } to{ transform:scale(1); opacity:1 } }
+    .product-card {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0px 6px 16px rgba(0,0,0,.08);
+      transition: 0.25s;
+      cursor: pointer;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0px 10px 20px rgba(0,0,0,.15);
+    }
+
+    .product-img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .product-info {
+      padding: 12px;
+    }
+
+    .product-title {
+      font-size: 1rem;
+      font-weight: 600;
+      height: 42px;
+    }
+
+    .product-price {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #ff5722;
+      margin-top: 4px;
+    }
+
+    .product-rating {
+      font-size: 0.85rem;
+      color: #ffc107;
+      margin: 3px 0;
+    }
+
+    .btn-buy {
+      background: #ff5722;
+      padding: 8px;
+      color: #fff;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 8px;
+      font-weight: bold;
+    }
   </style>
 </head>
-<body class="bg-glass">
+
+<body>
 
 <header class="nav glass">
   <div class="container nav-inner">
-    <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
-    <nav class="nav-links">
+    <a href="index.html" class="brand">Juragan Buah</a>
+    <nav>
       <a href="index.html">Home</a>
       <a class="active" href="projects.html">Produk</a>
-      <a href="pricing.html">Harga</a>
       <a href="checkout.html">Checkout</a>
       <a href="tracking.html">Tracking</a>
     </nav>
-    <div class="nav-actions">
-      <button id="cartBtnTop" class="btn">Cart (<span id="cartCountTop">0</span>)</button>
-    </div>
+    <button class="btn" id="cartBtnTop">Cart (<span id="cartCountTop">0</span>)</button>
   </div>
 </header>
 
-<main class="container" style="padding-top:32px">
+<div class="container" style="margin-top: 30px">
+
   <h1>Semua Produk</h1>
-  <p>Pilih buah terbaik dari kebun kami.</p>
-  <div id="productsFull" class="products-grid" aria-live="polite"></div>
-</main>
+  <p>Pilih buah segar seperti belanja di marketplace 🍊🍉</p>
 
-<aside id="cartSidebar" class="cart-sidebar"></aside>
+  <div id="productList" class="product-grid"></div>
 
-<!-- MODAL DETAIL -->
-<div id="prodModal" class="modal" aria-hidden="true">
-  <div class="modal-box">
-    <h3 id="m_title"></h3>
-    <img id="m_img" style="width:100%;border-radius:10px;margin:12px 0" alt="">
-    <p id="m_price" style="font-weight:bold"></p>
-    <p id="m_desc"></p>
-    <div style="margin-top:12px">
-      <button id="m_close" class="btn w-100">Tutup</button>
-    </div>
-  </div>
 </div>
 
+<!-- CART SIDEBAR -->
+<aside id="cartSidebar" class="cart-sidebar"></aside>
+
 <script src="assets/js/app.js"></script>
+
 </body>
 </html>
