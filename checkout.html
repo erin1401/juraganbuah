@@ -1,104 +1,283 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout — Juragan Buah</title>
-  <link rel="stylesheet" href="assets/css/utilities.css" />
-  <link rel="stylesheet" href="assets/css/style.css" />
-</head>
-<body class="bg-glass">
 
-<header class="nav glass">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/utilities.css">
+
+  <style>
+    body { background: #f7f7f7; }
+
+    .checkout-container {
+      max-width: 980px;
+      margin: 80px auto;
+      display: flex;
+      gap: 20px;
+    }
+
+    /* LEFT */
+    .checkout-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    .card-title {
+      font-weight: 600;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .item-row img {
+      width: 70px;
+      height: 70px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    /* RIGHT SUMMARY */
+    .checkout-right {
+      width: 320px;
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+    }
+
+    .summary-box {
+      padding: 20px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.06);
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    #totalFinal {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ff5722;
+      margin: 10px 0;
+    }
+
+    .input {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+
+    @media(max-width:768px){
+      .checkout-container { flex-direction: column; }
+      .checkout-right { width: 100%; position: relative; top: 0; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="nav glass blur">
   <div class="container nav-inner">
-    <a class="brand" href="index.html"><img src="assets/img/logo.png" class="logo"> Juragan Buah</a>
+    <a href="index.html" class="brand">Juragan Buah</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="projects.html">Produk</a>
+      <a class="active" href="checkout.html">Checkout</a>
+      <a href="tracking.html">Tracking</a>
+    </nav>
   </div>
 </header>
 
-<main class="container" style="padding-top:24px">
-  <div class="checkout-grid">
-    <!-- LEFT: cart & form -->
-    <div>
-      <div class="card">
-        <h2>Ringkasan Pesanan</h2>
-        <div id="checkoutItems" style="margin-top:12px"></div>
-      </div>
 
-      <div class="card mt-2">
-        <h3>Detail Pengiriman</h3>
-        <input id="c_name" class="mt-1" placeholder="Nama penerima" />
-        <input id="c_phone" class="mt-1" placeholder="No. WA (628...)" />
-        <textarea id="c_address" class="mt-1" placeholder="Alamat lengkap"></textarea>
-      </div>
+<div class="checkout-container">
 
-      <div class="card mt-2">
-        <h3>Metode Pengiriman</h3>
-        <select id="shippingMethod" class="mt-1">
-          <option value="reg">Reguler — Rp10.000</option>
-          <option value="hemat">Hemat — Rp6.000</option>
-          <option value="same">Same Day — Rp20.000</option>
-        </select>
+  <!-- LEFT SIDE -->
+  <div class="checkout-left">
 
-        <h3 class="mt-2">Metode Pembayaran</h3>
-        <select id="payMethod" class="mt-1">
-          <option value="cod">Bayar di Tempat (COD)</option>
-          <option value="transfer">Transfer Bank</option>
-          <option value="qris">QRIS</option>
-        </select>
-
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button id="placeOrder" class="btn primary w-100">Lanjutkan ke Pembayaran</button>
-        </div>
-      </div>
+    <!-- SECTION: ITEMS -->
+    <div class="card-box">
+      <div class="card-title">Ringkasan Pesanan</div>
+      <div id="checkoutItems"></div>
     </div>
 
-    <!-- RIGHT: summary -->
-    <aside class="checkout-aside">
-      <div class="card checkout-summary">
-        <h3>Ringkasan</h3>
-        <div class="summary-row"><div>Subtotal</div><div id="subTotal">Rp0</div></div>
-        <div class="summary-row"><div>Ongkos Kirim</div><div id="shipCost">Rp0</div></div>
-        <div class="summary-row"><div>Potongan</div><div id="discount">Rp0</div></div>
-        <div class="summary-row"><strong>Total</strong><strong id="grandTotal">Rp0</strong></div>
-      </div>
-    </aside>
+    <!-- SECTION: BUYER INFO -->
+    <div class="card-box">
+      <div class="card-title">Informasi Pembeli</div>
+
+      <input id="buyerName" class="input" placeholder="Nama lengkap">
+      <input id="buyerPhone" class="input" placeholder="Nomor WhatsApp">
+    </div>
+
+    <!-- SECTION: ADDRESS -->
+    <div class="card-box">
+      <div class="card-title">Alamat Pengiriman</div>
+
+      <input id="shipAddress" class="input" placeholder="Alamat lengkap (Google Autocomplete)">
+    </div>
+
+    <!-- SECTION: SHIPPING METHOD -->
+    <div class="card-box">
+      <div class="card-title">Metode Pengiriman</div>
+      <select id="shipMethod" class="input">
+        <option value="reg">Reguler</option>
+        <option value="same">Same Day</option>
+        <option value="cargo">Cargo</option>
+      </select>
+    </div>
+
+    <!-- SECTION: PAYMENT -->
+    <div class="card-box">
+      <div class="card-title">Metode Pembayaran</div>
+      <select id="payMethod" class="input">
+        <option value="transfer">Transfer Bank</option>
+        <option value="qris">QRIS</option>
+        <option value="cod">COD (Bayar di Tempat)</option>
+      </select>
+
+      <label style="font-size:.9rem;opacity:.8;margin-top:5px">Upload bukti pembayaran (jika Transfer/QRIS)</label>
+      <input type="file" accept="image/*" class="input" onchange="savePaymentProof(this.files[0])">
+    </div>
+
   </div>
-</main>
 
-<aside id="cartSidebar" class="cart-sidebar"></aside>
+  <!-- RIGHT SIDE -->
+  <div class="checkout-right">
+    <div class="summary-box">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+      <div class="summary-line">
+        <span>Subtotal</span><span id="sumSubtotal">Rp0</span>
+      </div>
+
+      <div class="summary-line">
+        <span>Ongkir</span><span id="sumOngkir">Rp0</span>
+      </div>
+
+      <hr>
+
+      <div id="totalFinal">Rp0</div>
+
+      <button id="payBtn" class="btn primary w-100">Buat Pesanan</button>
+    </div>
+  </div>
+
+</div>
+
 <script src="assets/js/app.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+
+<script>
+/* ----------------- AUTOCOMPLETE ------------------ */
+let autocomplete;
+function initAuto(){
+  autocomplete = new google.maps.places.Autocomplete(
+    document.getElementById("shipAddress"),
+    { types:['geocode'], componentRestrictions: {country:"id"} }
+  );
+}
+google.maps.event.addDomListener(window,'load',initAuto);
+
+/* ----------------- RENDER CART ------------------ */
+renderCheckoutItems();
+function renderCheckoutItems(){
+  const wrap = document.getElementById("checkoutItems");
+
+  const cart = getCart();
+  if(cart.length===0){
+    wrap.innerHTML = "<p>Keranjang kosong.</p>";
+    return;
+  }
+
+  wrap.innerHTML = cart.map(item => `
+    <div class="item-row">
+      <img src="${item.img}">
+      <div>
+        <div><strong>${item.title}</strong></div>
+        <div>${item.qty} x ${currency(item.price)}</div>
+      </div>
+    </div>
+  `).join("");
+
+  calcTotal();
+}
+
+/* ----------------- HITUNG TOTAL ------------------ */
+function calcTotal(){
+  const cart = getCart();
+  let subtotal = cart.reduce((t,i)=> t + (i.price*i.qty),0);
+
+  const addr = document.getElementById("shipAddress").value || "";
+  let ongkir = calcDistanceCity(addr);
+
+  const method = document.getElementById("shipMethod").value;
+  if(method==="same") ongkir += 20000;
+  if(method==="cargo") ongkir += 5000;
+
+  document.getElementById("sumSubtotal").textContent = currency(subtotal);
+  document.getElementById("sumOngkir").textContent   = currency(ongkir);
+
+  const finalTotal = subtotal + ongkir;
+  document.getElementById("totalFinal").textContent = currency(finalTotal);
+
+  return finalTotal;
+}
+
+document.getElementById("shipAddress").onkeyup = calcTotal;
+document.getElementById("shipMethod").onchange = calcTotal;
+
+/* ----------------- SUBMIT ORDER ------------------ */
+document.getElementById("payBtn").onclick = () => {
+  const name = buyerName.value.trim();
+  const phone = buyerPhone.value.trim();
+  const addr = shipAddress.value.trim();
+  const total = calcTotal();
+  const method = payMethod.value;
+
+  if(!name || !phone){
+    alert("Nama & Nomor HP wajib diisi");
+    return;
+  }
+
+  const order = {
+    id: "ORD-" + Date.now(),
+    items: getCart(),
+    buyer: name,
+    phone,
+    address: addr,
+    payMethod: method,
+    total,
+    created: new Date().toISOString()
+  };
+
+  localStorage.setItem("LAST_ORDER", JSON.stringify(order));
+
+  // Redirect ke payment page
+  window.location.href = `payment.html?id=${order.id}`;
+}
+</script>
+
 </body>
 </html>
-
-<h3>Alamat Pengiriman</h3>
-<input id="shipAddress" class="input" placeholder="Alamat lengkap">
-
-<h3>Metode Pengiriman</h3>
-<select id="shipMethod" class="input">
-  <option value="reg">Reguler</option>
-  <option value="same">Same Day</option>
-  <option value="cargo">Cargo</option>
-</select>
-
-<h3>Metode Pembayaran</h3>
-<select id="payMethod" class="input">
-  <option value="transfer">Transfer</option>
-  <option value="qris">QRIS</option>
-  <option value="cod">COD</option>
-</select>
-
-<h3>Upload Bukti Pembayaran (Opsional)</h3>
-<input type="file" accept="image/*" onchange="savePaymentProof(this.files[0])">
-
-const addr = document.getElementById("shipAddress").value;
-const shipCost = calcDistanceCity(addr);
-
-let method = document.getElementById("shipMethod").value;
-if(method=="same") shipCost += 20000;
-if(method=="cargo") shipCost += 5000;
-
-const finalTotal = total + shipCost;
-
