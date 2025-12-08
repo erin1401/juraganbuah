@@ -49,3 +49,22 @@
   <script src="assets/js/app.js"></script>
 </body>
 </html>
+
+function autoUpdateStatus(order){
+  const t = Date.now() - new Date(order.created).getTime();
+
+  if(t < 2*60*60*1000) return "Dikemas";
+  if(t < 12*60*60*1000) return "Dikirim";
+  return "Selesai";
+}
+
+    order.status = autoUpdateStatus(order);
+
+trackContent.innerHTML = `
+  <p><strong>Status:</strong> ${order.status}</p>
+  <div class="progress">
+    <div class="bar" style="width:${order.status=="Dikemas"?33:order.status=="Dikirim"?66:100}%"></div>
+  </div>
+`;
+
+    
