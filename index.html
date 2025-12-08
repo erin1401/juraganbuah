@@ -85,14 +85,35 @@
 
 <section class="hero">
 
-  <!-- BACKGROUND SLIDER -->
- <!-- ================= HERO SLIDER ================= -->
+<!-- ================= HERO SLIDER ================= -->
 <section class="hero-slider">
 
   <div class="slides">
       <div class="slide active" style="background-image:url('assets/img/banner1.jpg');"></div>
       <div class="slide" style="background-image:url('assets/img/banner2.jpg');"></div>
       <div class="slide" style="background-image:url('assets/img/banner3.jpg');"></div>
+  </div>
+
+  <!-- TEXT KIRI -->
+  <div class="hero-left">
+      <h1 class="hero-title">Buah Segar<br>Setiap Hari 🍉</h1>
+      <p class="hero-sub">Kualitas premium langsung dari petani terbaik</p>
+  </div>
+
+  <!-- QUICK ORDER KANAN -->
+  <div class="hero-order">
+      <h3>Quick Order</h3>
+      <p>Pilih buah favoritmu & pesan cepat!</p>
+
+      <select id="quickProduct">
+          <option value="Semangka Merah">Semangka Merah</option>
+          <option value="Melon Premium">Melon Premium</option>
+          <option value="Jeruk Baby">Jeruk Baby</option>
+      </select>
+
+      <input id="quickQty" type="number" value="1" min="1">
+
+      <button onclick="quickOrder()">Pesan via WhatsApp</button>
   </div>
 
   <!-- NAV BUTTON -->
@@ -103,72 +124,6 @@
   <div class="dots" id="dots"></div>
 
 </section>
-
-
-  <!-- LEFT TEXT -->
-  <div class="hero-left tilt">
-    Buah Segar <br>
-    Setiap Hari 🍉🍍  
-    <span>Langsung dari petani terbaik</span>
-  </div>
-
-  <!-- RIGHT QUICK ORDER -->
-  <form class="quick-box tilt" id="quickOrderForm">
-    <h3>Quick Order</h3>
-
-    <label>Pilih Buah</label>
-    <select id="qoProduct" class="input">
-      <option value="p1">Apel Fuji</option>
-      <option value="p2">Jeruk Premium</option>
-      <option value="p3">Semangka Merah</option>
-      <option value="p4">Mangga Harum Manis</option>
-    </select>
-
-    <label>Jumlah</label>
-    <input type="number" id="qoQty" class="input" min="1" value="1">
-
-    <label>Alamat (Google Autocomplete)</label>
-    <input id="qoAddress" class="input" placeholder="Masukkan alamat">
-
-    <button class="btn primary w-100" type="submit">Pesan Sekarang</button>
-  </form>
-
-</section>
-
-<script src="assets/js/app.js"></script>
-
-<!-- GOOGLE PLACES -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
-
-<script>
-  // Autocomplete Google
-  let autocomplete;
-  function initAutocomplete(){
-    autocomplete = new google.maps.places.Autocomplete(
-      document.getElementById("qoAddress"),
-      { types:['geocode'], componentRestrictions:{country:"id"} }
-    );
-  }
-  google.maps.event.addDomListener(window,'load',initAutocomplete);
-
-  // Quick Order
-  document.getElementById("quickOrderForm").onsubmit = e => {
-    e.preventDefault();
-
-    const id = document.getElementById("qoProduct").value;
-    const qty = Number(document.getElementById("qoQty").value);
-    const addr = document.getElementById("qoAddress").value;
-
-    const p = PRODUCTS.find(x=>x.id===id);
-
-    clearCart();
-    addToCart({...p, qty });
-
-    localStorage.setItem("TEMP_ADDR", addr);
-
-    location.href="checkout.html";
-  }
-</script>
 
 </body>
 </html>
