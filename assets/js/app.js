@@ -5,7 +5,7 @@
   /* ---------------- constants & helpers ---------------- */
   const LS_CART = 'jb_cart_v2';
   const LS_ORDERS = 'jb_orders_v2';
-  let WA_SELLER = '6281234567890'; // <<< GANTI NOMOR PENJUAL (tanpa +)
+  let WA_SELLER = '6281359655276'; // <<< GANTI NOMOR PENJUAL (tanpa +)
   const currency = v => 'Rp' + Number(v).toLocaleString('id-ID');
   const $ = s => document.querySelector(s);
   const $$ = s => Array.from(document.querySelectorAll(s));
