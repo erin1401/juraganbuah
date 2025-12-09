@@ -474,165 +474,37 @@ window.savePaymentProof = function(file){
   reader.readAsDataURL(file);
 }
 
-/* ========== SLIDER ========= */
-/* ==================== SLIDER FIX ==================== */
+/* ================= SIMPLE CLEAN SLIDER ================= */
 
-let slideIndex = 0;
-let slides, dots;
+let index = 0;
+const slides = document.querySelectorAll(".slide");
+const next = document.getElementById("nextSlide");
+const prev = document.getElementById("prevSlide");
+const dotsContainer = document.getElementById("dots");
 
-function initSlider(){
-  slides = document.querySelectorAll('.slide');
-  const dotsContainer = document.getElementById('dots');
-
-  // Buat titik
-  dotsContainer.innerHTML = "";
-  slides.forEach((_, i)=>{
-     const dot = document.createElement('div');
-     dot.onclick = ()=>goToSlide(i);
-     dotsContainer.appendChild(dot);
-  });
-
-  dots = document.querySelectorAll('#dots div');
-  showSlide(0);
-}
-
-function showSlide(n){
-  slides.forEach(s=>s.classList.remove('active'));
-  dots.forEach(d=>d.classList.remove('active'));
-
-  slides[n].classList.add('active');
-  dots[n].classList.add('active');
-}
-
-function nextSlide(){
-  slideIndex = (slideIndex + 1) % slides.length;
-  showSlide(slideIndex);
-}
-
-function prevSlide(){
-  slideIndex = (slideIndex - 1 + slides.length) % slides.length;
-  showSlide(slideIndex);
-}
-
-function goToSlide(i){
-  slideIndex = i;
-  showSlide(slideIndex);
-}
-
-// Auto-play
-setInterval(()=> nextSlide(), 4000);
-
-// Jalankan slider setelah halaman siap
-window.addEventListener('load', initSlider);
-
-/* QUICK ORDER */
-function quickOrder(){
-  const p = document.getElementById("quickProduct").value;
-  const q = document.getElementById("quickQty").value;
-
-  const wa =
-    `https://wa.me/6281234567890?text=Halo,%20saya%20ingin%20pesan%20${p}%20(${q}kg)`;
-
-  window.open(wa, "_blank");
-}
-/* PARALLAX yang tidak merusak slider */
-window.addEventListener("scroll", () => {
-  const y = window.scrollY;
-  document.querySelectorAll(".slide").forEach(slide=>{
-    slide.style.transform = `translateY(${y * 0.08}px)`; 
-  });
+/* DOT GENERATOR */
+slides.forEach((s,i)=>{
+    let d = document.createElement("div");
+    d.onclick = ()=> showSlide(i);
+    dotsContainer.appendChild(d);
 });
+const dots = dotsContainer.querySelectorAll("div");
 
-let slideIndex = 0;
-let slides = document.querySelectorAll(".slide");
-let dots;
-
-function initSlider(){
-    const dotsContainer = document.getElementById("dots");
-    dotsContainer.innerHTML = "";
-
-    slides.forEach((s, i) => {
-        const d = document.createElement("div");
-        d.onclick = () => goToSlide(i);
-        dotsContainer.appendChild(d);
-    });
-
-    dots = document.querySelectorAll(".dots div");
-
-    showSlide(0);
+/* SHOW SLIDE */
+function showSlide(i){
+    slides.forEach(s=>s.classList.remove("active"));
+    dots.forEach(d=>d.classList.remove("active"));
+    slides[i].classList.add("active");
+    dots[i].classList.add("active");
+    index = i;
 }
 
-function showSlide(n){
-    slides.forEach(s => s.classList.remove("active"));
-    dots.forEach(d => d.classList.remove("active"));
+/* NEXT / PREV */
+next.onclick = () => showSlide((index+1)%slides.length);
+prev.onclick = () => showSlide((index-1+slides.length)%slides.length);
 
-    slides[n].classList.add("active");
-    dots[n].classList.add("active");
-}
+/* AUTO PLAY */
+setInterval(()=> next.onclick(), 5000);
 
-function nextSlide(){
-    slideIndex = (slideIndex + 1) % slides.length;
-    showSlide(slideIndex);
-}
-
-function prevSlide(){
-    slideIndex = (slideIndex - 1 + slides.length) % slides.length;
-    showSlide(slideIndex);
-}
-
-function goToSlide(index){
-    slideIndex = index;
-    showSlide(index);
-}
-
-setInterval(nextSlide, 4500);
-
-window.addEventListener("load", initSlider);
-
-/* Scroll Reveal */
-const revealElements = document.querySelectorAll(".cat-item, .glass-qo, .hero-text-left");
-
-function reveal() {
-    revealElements.forEach(el => {
-        const top = el.getBoundingClientRect().top;
-        if (top < window.innerHeight - 70) {
-            el.style.opacity = "1";
-            el.style.transform = "translateY(0)";
-        }
-    });
-}
-
-window.addEventListener("scroll", reveal);
-reveal();
-
-/* ========== HAMBURGER MENU MOBILE ========== */
-
-const hamburger = document.getElementById("hamburger");
-const mobileMenu = document.getElementById("mobileMenu");
-const closeMenu = document.getElementById("closeMenu");
-
-hamburger.addEventListener("click", () => {
-    mobileMenu.style.right = "0";
-});
-
-closeMenu.addEventListener("click", () => {
-    mobileMenu.style.right = "-100%";
-});
-
-// Klik area luar untuk tutup
-window.addEventListener("click", (e) => {
-    if (e.target === mobileMenu) {
-        mobileMenu.style.right = "-100%";
-    }
-});
-
-/* ================= MOBILE HEADER SHRINK ================= */
-const mobHeader = document.getElementById("mobileHeader");
-
-window.addEventListener("scroll", () => {
-    if (window.scrollY > 30) {
-        mobHeader.classList.add("shrink");
-    } else {
-        mobHeader.classList.remove("shrink");
-    }
-});
+/* INIT */
+showSlide(0);
