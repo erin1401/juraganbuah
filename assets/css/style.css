@@ -468,3 +468,9 @@ nav a:hover::after{
 .cat-item:hover {
   transform: translateY(-8px);
 }
+
+.cat-item, .glass-qo, .hero-text-left {
+  opacity:0;
+  transform:translateY(40px);
+  transition:1s ease;
+}
