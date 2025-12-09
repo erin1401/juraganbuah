@@ -626,3 +626,13 @@ window.addEventListener("click", (e) => {
     }
 });
 
+/* ================= MOBILE HEADER SHRINK ================= */
+const mobHeader = document.getElementById("mobileHeader");
+
+window.addEventListener("scroll", () => {
+    if (window.scrollY > 30) {
+        mobHeader.classList.add("shrink");
+    } else {
+        mobHeader.classList.remove("shrink");
+    }
+});
