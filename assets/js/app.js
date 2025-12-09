@@ -604,3 +604,25 @@ function reveal() {
 
 window.addEventListener("scroll", reveal);
 reveal();
+
+/* ========== HAMBURGER MENU MOBILE ========== */
+
+const hamburger = document.getElementById("hamburger");
+const mobileMenu = document.getElementById("mobileMenu");
+const closeMenu = document.getElementById("closeMenu");
+
+hamburger.addEventListener("click", () => {
+    mobileMenu.style.right = "0";
+});
+
+closeMenu.addEventListener("click", () => {
+    mobileMenu.style.right = "-100%";
+});
+
+// Klik area luar untuk tutup
+window.addEventListener("click", (e) => {
+    if (e.target === mobileMenu) {
+        mobileMenu.style.right = "-100%";
+    }
+});
+
