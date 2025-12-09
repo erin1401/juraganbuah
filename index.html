@@ -43,33 +43,36 @@
 </div>
 
 <!-- ================= HERO SLIDER ================= -->
-<section class="hero-slider">
+<section class="hero">
 
-    <div class="slides">
+    <!-- SLIDER -->
+    <div class="hero-slider" id="heroSlider">
+
         <div class="slide active" style="background-image:url('assets/img/banner1.jpg');"></div>
         <div class="slide" style="background-image:url('assets/img/banner2.jpg');"></div>
         <div class="slide" style="background-image:url('assets/img/banner3.jpg');"></div>
+
+        <div class="nav-arrow left" id="prevSlide">❮</div>
+        <div class="nav-arrow right" id="nextSlide">❯</div>
+
+        <div class="dots" id="dots"></div>
     </div>
 
-    <!-- Quick Order -->
-    <div class="quick-order-box glass-qo">
-        <h2>Quick Order</h2>
-        <p>Pesan buah segar sekarang 🍉✨</p>
-        <a href="checkout.html" class="btn-qo">Pesan Sekarang</a>
-    </div>
-
-    <!-- Text kiri -->
-    <div class="hero-text-left">
+    <!-- TEXT TITLE LEFT -->
+    <div class="hero-title-left">
         <h1>Buah Segar Setiap Hari</h1>
-        <p>Kualitas Premium Untuk Anda</p>
+        <p>Kualitas Premium · Harga Terbaik</p>
     </div>
 
-    <!-- Navigasi slider -->
-    <div class="nav-arrow left" onclick="prevSlide()">❮</div>
-    <div class="nav-arrow right" onclick="nextSlide()">❯</div>
-    <div class="dots" id="dots"></div>
+    <!-- QUICK ORDER BOX -->
+    <div class="quick-order-box glass">
+        <h3>Quick Order 🍉</h3>
+        <input type="text" placeholder="Nama Produk">
+        <input type="number" placeholder="Jumlah">
+        <button class="btn-qo">Pesan Sekarang</button>
+    </div>
+
 </section>
 
-<script src="assets/js/app.js"></script>
 </body>
 </html>
