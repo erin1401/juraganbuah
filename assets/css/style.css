@@ -247,29 +247,21 @@ body{
   transform: scale(1.2);
 }
 
-/* ------------ QUICK ORDER FIXED TRANSPARENT ------------ */
 .glass-qo {
-  position: absolute;
-  right: 40px;
-  top: 50%;
+  background: rgba(255,255,255,0.22);
+  backdrop-filter: blur(16px);
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  padding: 26px;
+  width: 300px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
   transform: translateY(-50%);
-  width: 280px;
-  padding: 22px;
-  background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  color: #000;
-  box-shadow: 0 8px 35px rgba(0,0,0,0.2);
+  animation: fadeInUp 1.2s ease-out;
 }
 
-.btn-qo {
-  display: block;
-  margin-top: 15px;
-  padding: 10px 15px;
-  text-align: center;
-  background: #1fa341;
-  color: white;
-  border-radius: 10px;
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px);}
+  to   { opacity: 1; transform: translateY(-50%);}
 }
 
 /* ------------ HERO TEXT LEFT ------------ */
@@ -376,3 +368,103 @@ nav a:hover::after{
   transition:opacity .4s ease-out, transform .4s ease-out;
 }
 
+/* -------- PREMIUM NAVBAR -------- */
+
+.navbar {
+  position: fixed;
+  top:0;
+  width:100%;
+  padding:12px 0;
+  z-index: 9999;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  transition:.3s;
+}
+
+.nav-container {
+  width:90%;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+}
+
+.logo {
+  height: 50px;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+}
+
+.nav-links a {
+  margin:0 16px;
+  color:#000;
+  font-weight:600;
+  font-size:1rem;
+  transition:.3s;
+}
+
+.nav-links a:hover {
+  color:#12a537;
+}
+
+.nav-icons i {
+  margin-left:15px;
+  font-size:1.6rem;
+  cursor:pointer;
+  color:#000;
+}
+
+  /* -------- FLOATING FRUITS -------- */
+
+.floating-fruits img {
+    position: absolute;
+    width: 120px;
+    opacity: .9;
+    animation: float infinite ease-in-out;
+}
+
+.fruit1 { top: 20%; left: 5%; animation-duration: 5s; }
+.fruit2 { top: 60%; left: 80%; animation-duration: 6s; }
+.fruit3 { top: 30%; left: 70%; animation-duration: 4.5s; }
+
+@keyframes float {
+    0%   { transform: translateY(0) rotate(0deg); }
+    50%  { transform: translateY(-25px) rotate(6deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+}
+
+.categories {
+  padding: 60px 30px;
+  text-align:center;
+}
+
+.cat-scroll {
+  display:flex;
+  overflow-x:auto;
+  gap:25px;
+  margin-top:25px;
+  padding-bottom:10px;
+}
+
+.cat-scroll::-webkit-scrollbar{
+  height:8px;
+}
+
+.cat-item {
+  min-width:110px;
+  background:#fff;
+  padding:15px;
+  border-radius:20px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+  transition:.3s;
+  cursor:pointer;
+}
+
+.cat-item img {
+  width:70px;
+  margin-bottom:10px;
+}
+
+.cat-item:hover {
+  transform: translateY(-8px);
+}
