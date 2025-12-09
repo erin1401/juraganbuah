@@ -588,3 +588,19 @@ function goToSlide(index){
 setInterval(nextSlide, 4500);
 
 window.addEventListener("load", initSlider);
+
+/* Scroll Reveal */
+const revealElements = document.querySelectorAll(".cat-item, .glass-qo, .hero-text-left");
+
+function reveal() {
+    revealElements.forEach(el => {
+        const top = el.getBoundingClientRect().top;
+        if (top < window.innerHeight - 70) {
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
+        }
+    });
+}
+
+window.addEventListener("scroll", reveal);
+reveal();
